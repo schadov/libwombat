@@ -5,7 +5,7 @@
 texture<float, 1> texXf;
 
 //Helper functions
-__device__ unsigned int compute_thread_index () {
+__device__  unsigned int compute_thread_index () {
 	return ( blockIdx.x*blockDim.x*blockDim.y+
 		blockIdx.y*blockDim.x*blockDim.y*gridDim.x+
 		threadIdx.x+threadIdx.y*blockDim.x) ;
@@ -16,7 +16,7 @@ void bind_x_texf(float *x,unsigned int N)
 	cudaBindTexture(0,texXf,x,N*sizeof(float));
 }
 
-void unbind_x_tex()
+void  unbind_x_tex()
 {
 	cudaUnbindTexture(texXf);
 }
@@ -344,7 +344,7 @@ __global__ void chebyshev_iteration_krnl(
 	)
 {
 	float lmax = 1.01f;
-	float lmin=  1.0f;
+	float lmin=  1.f;
 
 	float c = (lmax-lmin)/2;
 	float d = (lmax+lmin)/2;

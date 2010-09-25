@@ -4,16 +4,26 @@
 #include "stdafx.h"
 #include <iostream>
 
+#include <numeric>
+
 #include <boost/bind.hpp>
 
+#include "DenseMatrix.h"
 #include "MKL_blas.h"
 #include "CUDABlas.h"
 #include "PMKLBlas.h"
 #include "SparseMatrix.h"
+
 #include "cuda_vector.h"
 
 #include "bicg_stab.h"
 #include "chebyshev.h"
+#include "cgs.h"
+#include "cg.h"
+#include "hybrids.h"
+
+#include "profile.h"
+
 
 void blas_test() 
 {
@@ -112,7 +122,7 @@ void set_matrix_value(FullMatrix<float>& matr,int a,int b,float v){
 void solve_test(){
 	std::vector<float> b;
 	FullMatrix<float> matr;
-	CNCLoader<float>::load(L"N:\\libs\\CNC\\examples\\example_1.dat",
+	CNCLoader<float>::load(L"N:\\libs\\CNC\\examples\\example_2.dat",
 		boost::bind(set_matrix_value,boost::ref(matr),_1,_2,_3),
 		boost::bind(set_value<std::vector<float>,float>,boost::ref(b),_1,_2),
 		boost::bind(allocate_matrix_and_vector,boost::ref(matr),boost::ref(b),_1)
@@ -124,12 +134,72 @@ void solve_test(){
 	std::vector<float> x0(b.size());
 	unsigned int N = b.size();
 
-	float eps = 0.004f;
+	float eps = 0.0004f;
 	//solve_bicgstab(A,&b[0],&x0[0],N,8000,eps,16,CUDABlas());
-	solve_chebyshev(A,&b[0],&x0[0],N,2,eps,16,CUDABlas());
+	//solve_cg_a(A,&b[0],&x0[0],N,8000,eps,16,CUDABlas());
+	//solve_cg(A,&b[0],&x0[0],N,8000,eps,16,CUDABlas());
+	//solve_cgs(A,&b[0],&x0[0],N,8000,eps,16,CUDABlas());
+	//solve_chebyshev(A,&b[0],&x0[0],N,2,eps,16,CUDABlas());
 	//solve_chebyshev2(A,&b[0],&x0[0],N,8000,eps,16,CUDABlas());
 	//solve_chebyshev3(A,&b[0],&x0[0],N,8000,eps,16,CUDABlas());
 	//solve_chebyshev(A,&b[0],&x0[0],N,8000,eps,16,PMKLBlas());
+
+}
+
+template<class T>  T absdiff(T t1, T t2){
+	return std::abs(t1-t2);
+}
+
+template<class Cont> double diff(const Cont& c1, const Cont& c2){
+	typedef typename Cont::value_type Val ;
+	return std::inner_product(c1.begin(),c1.end(),
+		c2.begin(),(Val)0.0,std::plus<Val>(),absdiff<Val>);
+} 
+
+void dense_spmv_test(){
+	int n = 4096;
+	int N = n*n;
+	typedef float Real;
+	DenseMatrix<Real> matrix;
+	matrix.allocate(n);
+	std::vector<Real> x(n),y(n),yy(n),yyt(n),yyw(n);
+	for (int i=0;i<n;++i){
+		for (int j=0;j<n;++j){
+			matrix[i][j] = (Real)rand()/(Real)10000.0;
+			//matrix[i][j] = (double)i+j;
+
+		}
+		x[i] = (Real)rand()/(Real)10000.0;
+		//x[i] = (double)i;
+	}
+	
+	profile p;
+
+	p.start_hi_res(100000);
+	matrix.spmv(&x[0],&y[0]);
+	long long t1 = p.query_hi_res();
+	std::cout << "Naive spmv time: " << t1 << std::endl << std::endl; 
+
+	p.start_hi_res(100000);
+	matrix.spmv_mkl(&x[0],&yy[0]);
+	long long t2 = p.query_hi_res();
+	std::cout << "MKL spmv time: " << t2 << std::endl;
+	std::cout << "Ratio " << double(t1)/t2 << std::endl;
+	std::cout << "Error " << diff(y,yy) << std::endl << std::endl;
+
+	p.start_hi_res(100000);
+	matrix.spmv_tbb(&x[0],&yyt[0]);
+	long long t3 = p.query_hi_res();
+	std::cout << "TBB spmv time: " << t3 << std::endl;
+	std::cout << "Ratio " << double(t1)/t3 << std::endl;
+	std::cout << "Error " << diff(y,yyt) << std::endl << std::endl;
+
+	p.start_hi_res(100000);
+	matrix.spmv_tbb_mkl(&x[0],&yyw[0]);
+	long long t4 = p.query_hi_res();
+	std::cout << "TBB MKL spmv time: " << t4 << std::endl; 
+	std::cout << "Ratio " << Real(t1)/t4 << std::endl; 
+	std::cout << "Error " << diff(y,yyw) << std::endl << std::endl;
 
 
 }
@@ -139,7 +209,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	//blas_test();
 	tbb::task_scheduler_init init;
-	solve_test();
+	//solve_test();
+	dense_spmv_test();
 
 	return 0;
 }

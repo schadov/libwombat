@@ -213,6 +213,10 @@ public:
 		A.spmv_tbb(x,b);
 	};
 
+	template<class RealT> static void spmv(unsigned int N, DenseMatrix<RealT>& A, RealT* x, RealT* b){
+		A.spmv_tbb(x,b);
+	};
+
 	template<class RealT> static void memberwise_mul(unsigned int N, RealT* x, RealT* y,RealT* z);
 
 	template<> static void memberwise_mul<float>(unsigned int N, float* a, float*b,float* y)
