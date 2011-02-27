@@ -11,7 +11,7 @@
 
 struct MKLBlas
 {
-	typedef float Real;
+	typedef BlasCommon::FloatType Real;
 	static const int one = 1;
 
 	static Real dot(const unsigned int N,const Real* x,const Real* y)

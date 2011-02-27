@@ -5,7 +5,7 @@
 
 struct MKLBlas
 {
-	typedef float Real;
+	typedef BlasCommon::FloatType Real;
 	static const int one = 1;
 
 	/************************************************************************/

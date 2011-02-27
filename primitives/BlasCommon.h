@@ -8,4 +8,7 @@ namespace BlasCommon{
 		unsigned int nrows;
 		unsigned int nelements;
 	};
+
+	typedef float FloatType;
 }
+

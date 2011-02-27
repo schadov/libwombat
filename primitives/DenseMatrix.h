@@ -4,6 +4,14 @@
 #include <boost/utility.hpp>
 #include <boost/type_traits.hpp>
 #include "tbb_helper.h"
+#include "cuda_vector.h"
+
+
+template<class RealT> struct Dense_matrix_cuda{
+	RealT* a;
+	unsigned int nrows;
+	unsigned int nelements;
+};
 
 template<class Real> class DenseMatrix
 {
@@ -23,7 +31,15 @@ template<class Real> class DenseMatrix
 		return data_[get_coord(i,j)];
 	}
 
+	typedef Dense_matrix_cuda<Real> GPU_matrix_type;
+	GPU_matrix_type *cuda_storage_;
+	
+
 public:
+
+	DenseMatrix(){
+		cuda_storage_ = 0;
+	}
 
 	void allocate(unsigned int new_dim){
 		data_.resize(new_dim*new_dim);
@@ -227,6 +243,17 @@ public:
 		//dgemv("n",&N,&N,&done,A,&N,X,&one,&beta,Y,&one);	
 	}
 
+	//----CUDA-----
+
+	void spmv_gpu(const CudaVector<float>& x,CudaVector<float>& y){
+		
+		if(cuda_storage_ == 0){
+			throw std::exception("No GPU storage for matrix");
+		}
+		GPU_matrix_type gpu_matrix = get_gpu_storage();
+		spmv_dense_float(gpu_matrix.a,const_cast<float*>(x.get()),y.get(),dim(),128);
+	}
+
 	void transponse(DenseMatrix &out){
 		out.allocate(dim());
 		for (unsigned int i=0;i< dim() ;++i)
@@ -235,6 +262,50 @@ public:
 				out[j][i] = (*this)[i][j];
 			}
 		}
+	}
+
+	GPU_matrix_type load_to_gpu()const{
+		GPU_matrix_type gpu_storage;
+
+		//allocate
+		//TODO: check for errors
+		CUDABlas::allocate(data_.size(),gpu_storage.a);
+	
+		gpu_storage.nrows = dim();
+		gpu_storage.nelements = data_.size();
+
+		CUDABlas::set(data_.size(),&data_[0],gpu_storage.a);
+		
+		return gpu_storage;
+	}
+
+	void load_from_gpu(GPU_matrix_type gpu_storage)
+	{
+		data_.resize(gpu_storage.nelements);
+		CUDABlas::extract(gpu_storage.nelements,gpu_storage.a,&data_[0]);
+		return ;
+	}
+
+	void deallocate_gpu(GPU_matrix_type data)const{
+		CUDABlas::deallocate(data.a);
+	}
+
+	void attach_gpu_storage(GPU_matrix_type cuda_storage){
+		assert(cuda_storage_==0);
+		if(cuda_storage_==0){
+			cuda_storage_ = new GPU_matrix_type(cuda_storage);
+		}
+	}
+
+	void deallocate_gpu_storage(){
+		if(cuda_storage_!=0){
+			deallocate_gpu(*cuda_storage_);
+			delete cuda_storage_;
+		}
+	}
+
+	GPU_matrix_type get_gpu_storage()const{
+		return *cuda_storage_;
 	}
 
 };

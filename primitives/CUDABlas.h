@@ -8,7 +8,7 @@
 
 struct CUDABlas
 {
-	typedef float Real;
+	typedef BlasCommon::FloatType Real;
 	static const int one = 1;
 public:
 	static Real dot(const unsigned int N,const Real* x,const Real* y)

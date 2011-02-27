@@ -116,11 +116,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
+				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="true"
 				AdditionalIncludeDirectories="Z:\Program Files\Intel\MKL\10.1.0.018\include\;$(INTEL_DEF_IA32_INSTALL_DIR)TBB\Include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="0"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -138,7 +142,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="libiomp5mt.lib mkl_sequential.lib mkl_intel_c.lib mkl_core.lib cublas.lib cuda.lib cudart.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="Z:\Program Files\Intel\MKL\10.1.0.018\ia32\lib\;$(INTEL_DEF_IA32_INSTALL_DIR)TBB\ia32\vc9\Lib"
+				AdditionalLibraryDirectories="Z:\Program Files\Intel\MKL\10.1.0.018\ia32\lib\;$(INTEL_DEF_IA32_INSTALL_DIR)TBB\Lib\ia32\vc9"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -207,6 +211,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\profile.h"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.h"
 				>
 			</File>
@@ -262,6 +270,28 @@
 				Name="CUDA"
 				>
 				<File
+					RelativePath=".\cuda_dense.cu"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="$(CUDA_BIN_PATH)\nvcc.exe -ccbin &quot;$(VCInstallDir)bin&quot;  -DWIN32 -D_CONSOLE -c -D_MBCS -Xcompiler /EHsc,/W3,/nologo,/Wp64,/Od,/Zi,/MT,/GS- -I&quot;$(CUDA_INC_PATH)&quot; -I./ -I../../common/inc -o $(ConfigurationName)/cuda_dense.obj  $(ConfigurationName)/../cuda_dense.cu&#x0D;&#x0A;"
+							Outputs="$(ConfigurationName)/cuda_dense.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							CommandLine="$(CUDA_BIN_PATH)\nvcc.exe -ccbin &quot;$(VCInstallDir)bin&quot; -DWIN32 -D_CONSOLE -c -D_MBCS -Xcompiler /EHsc,/W3,/nologo,/Wp64,/O2,/Zi,/MT,/GS- -I&quot;$(CUDA_INC_PATH)&quot; -I./ -I../../common/inc -o $(ConfigurationName)/cuda_dense.obj  $(ConfigurationName)/../cuda_dense.cu&#x0D;&#x0A;"
+							Outputs="$(ConfigurationName)/cuda_dense.obj"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
 					RelativePath=".\cuda_vector.h"
 					>
 				</File>
@@ -285,7 +315,7 @@
 							>
 							<Tool
 								Name="VCCustomBuildTool"
-								CommandLine="$(CUDA_BIN_PATH)\nvcc.exe -ccbin &quot;$(VCInstallDir)bin&quot; -DWIN32 -D_CONSOLE -c -D_MBCS -Xcompiler /EHsc,/W3,/nologo,/Wp64,/O2,/Zi,/MT,/GS- -I&quot;$(CUDA_INC_PATH)&quot; -I./ -I../../common/inc -o $(ConfigurationName)/cuda_sparse.obj  $(ConfigurationName)/../cuda_sparse.cu"
+								CommandLine="$(CUDA_BIN_PATH)\nvcc.exe -ccbin &quot;$(VCInstallDir)bin&quot; -DWIN32 -D_CONSOLE -c -D_MBCS -Xcompiler /EHsc,/W3,/nologo,/Wp64,/O2,/Zi,/MT,/GS- -I&quot;$(CUDA_INC_PATH)&quot; -I./ -I../../common/inc -o $(ConfigurationName)/cuda_sparse.obj  $(ConfigurationName)/../cuda_sparse.cu&#x0D;&#x0A;"
 								Outputs="$(ConfigurationName)/cuda_sparse.obj"
 							/>
 						</FileConfiguration>
@@ -307,10 +337,30 @@
 						>
 					</File>
 					<File
+						RelativePath=".\cg.h"
+						>
+					</File>
+					<File
+						RelativePath=".\cgs.h"
+						>
+					</File>
+					<File
 						RelativePath=".\chebyshev.h"
 						>
 					</File>
+					<File
+						RelativePath=".\hybrids.h"
+						>
+					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="Dense"
+				>
+				<File
+					RelativePath=".\DenseMatrix.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -322,6 +372,14 @@
 		<Filter
 			Name="My Amplifier Results"
 			>
+			<File
+				RelativePath=".\My Amplifier Results\r000hs\r000hs.ampl"
+				>
+			</File>
+			<File
+				RelativePath=".\My Amplifier Results\r001hs\r001hs.ampl"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

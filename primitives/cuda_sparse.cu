@@ -11,12 +11,12 @@ __device__  unsigned int compute_thread_index () {
 		threadIdx.x+threadIdx.y*blockDim.x) ;
 }
 
-void bind_x_texf(float *x,unsigned int N)
+void inline bind_x_texf(float *x,unsigned int N)
 {
 	cudaBindTexture(0,texXf,x,N*sizeof(float));
 }
 
-void  unbind_x_tex()
+void  inline unbind_x_tex()
 {
 	cudaUnbindTexture(texXf);
 }

@@ -23,7 +23,7 @@ static const int intOne = 1;
 struct PMKLBlas
 {
 	static const int one = 1;
-	typedef float Real;
+	typedef BlasCommon::FloatType Real;
 
 /************************************************************************/
 /* local classes: TBB workers                                           */

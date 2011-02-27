@@ -14,6 +14,14 @@ template<class RealT> struct CRS_matrix_cuda:public GPU_matrix<RealT>{
 	unsigned int nelements;
 };
 
+/*
+template<class RealT> struct Dense_matrix_cuda:public GPU_matrix<RealT>{
+	RealT* a;
+	unsigned int nrows;
+	unsigned int nelements;
+};*/
+
+
 void spmv_csr_float(CRS_matrix_cuda<float> A,
 					float* x, float* b, 
 					unsigned int thread_block_sz = THREAD_BLOCK_SIZE);
@@ -44,3 +52,7 @@ void chebyshev_iteration_s(CRS_matrix_cuda<float> A,float* x, float* b,
 void axmb_csr_float(CRS_matrix_cuda<float> A,
 					float* x, float* b, float* r,
 					unsigned int thread_block_sz= THREAD_BLOCK_SIZE );
+
+
+//------ dense
+void spmv_dense_float(float *A, float * x, float* y, int size,unsigned int thread_block_sz);

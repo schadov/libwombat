@@ -135,7 +135,7 @@ void solve_test(){
 	unsigned int N = b.size();
 
 	float eps = 0.0004f;
-	//solve_bicgstab(A,&b[0],&x0[0],N,8000,eps,16,CUDABlas());
+	solve_bicgstab(A,&b[0],&x0[0],N,8000,eps,16,CUDABlas());
 	//solve_cg_a(A,&b[0],&x0[0],N,8000,eps,16,CUDABlas());
 	//solve_cg(A,&b[0],&x0[0],N,8000,eps,16,CUDABlas());
 	//solve_cgs(A,&b[0],&x0[0],N,8000,eps,16,CUDABlas());
@@ -156,13 +156,14 @@ template<class Cont> double diff(const Cont& c1, const Cont& c2){
 		c2.begin(),(Val)0.0,std::plus<Val>(),absdiff<Val>);
 } 
 
+
 void dense_spmv_test(){
-	int n = 4096;
+	int n = 1024;
 	int N = n*n;
 	typedef float Real;
 	DenseMatrix<Real> matrix;
 	matrix.allocate(n);
-	std::vector<Real> x(n),y(n),yy(n),yyt(n),yyw(n);
+	std::vector<Real> x(n);
 	for (int i=0;i<n;++i){
 		for (int j=0;j<n;++j){
 			matrix[i][j] = (Real)rand()/(Real)10000.0;
@@ -175,31 +176,66 @@ void dense_spmv_test(){
 	
 	profile p;
 
+	const int nTimes = 100;
+
+	std::vector<Real> y(n);
 	p.start_hi_res(100000);
-	matrix.spmv(&x[0],&y[0]);
+	for (unsigned int i=0;i<nTimes;++i)
+	{
+		matrix.spmv(&x[0],&y[0]);
+	}
 	long long t1 = p.query_hi_res();
 	std::cout << "Naive spmv time: " << t1 << std::endl << std::endl; 
 
+	std::vector<Real> yy(n);
 	p.start_hi_res(100000);
-	matrix.spmv_mkl(&x[0],&yy[0]);
+	for (unsigned int i=0;i<nTimes;++i)
+	{
+		matrix.spmv_mkl(&x[0],&yy[0]);
+	}
 	long long t2 = p.query_hi_res();
 	std::cout << "MKL spmv time: " << t2 << std::endl;
 	std::cout << "Ratio " << double(t1)/t2 << std::endl;
 	std::cout << "Error " << diff(y,yy) << std::endl << std::endl;
 
+	std::vector<Real> yyt(n);
 	p.start_hi_res(100000);
-	matrix.spmv_tbb(&x[0],&yyt[0]);
+	for (unsigned int i=0;i<nTimes;++i)
+	{
+		matrix.spmv_tbb(&x[0],&yyt[0]);
+	}
 	long long t3 = p.query_hi_res();
 	std::cout << "TBB spmv time: " << t3 << std::endl;
 	std::cout << "Ratio " << double(t1)/t3 << std::endl;
 	std::cout << "Error " << diff(y,yyt) << std::endl << std::endl;
 
+	std::vector<Real> yyw(n);
 	p.start_hi_res(100000);
-	matrix.spmv_tbb_mkl(&x[0],&yyw[0]);
+
+	for (unsigned int i=0;i<nTimes;++i)
+	{
+		matrix.spmv_tbb_mkl(&x[0],&yyw[0]);
+	}
 	long long t4 = p.query_hi_res();
 	std::cout << "TBB MKL spmv time: " << t4 << std::endl; 
 	std::cout << "Ratio " << Real(t1)/t4 << std::endl; 
 	std::cout << "Error " << diff(y,yyw) << std::endl << std::endl;
+
+	std::vector<Real> yyX(n);
+	CudaVector<Real> xX(n);
+	CUDABlas::set(n,&x[0],xX.get());
+	CudaVector<Real> yX(n);
+	CUDABlas::initialize_matrix(matrix);
+	p.start_hi_res(100000);
+	for (unsigned int i=0;i<nTimes;++i)
+	{
+		matrix.spmv_gpu(xX,yX);
+	}
+	long long tX = p.query_hi_res();
+	CUDABlas::extract(n,yX.get(),&yyX[0]);
+	std::cout << "CUDA time: " << tX << std::endl; 
+	std::cout << "Ratio " << Real(t1)/tX << std::endl; 
+	std::cout << "Error " << diff(y,yyX) << std::endl << std::endl;
 
 
 }
