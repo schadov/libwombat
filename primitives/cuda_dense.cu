@@ -2,7 +2,7 @@
 texture<float, 1> texXf;
 
 //Helper functions
-__device__  unsigned int compute_thread_index () {
+__device__ inline  unsigned int compute_thread_index () {
 	return ( blockIdx.x*blockDim.x*blockDim.y+
 		blockIdx.y*blockDim.x*blockDim.y*gridDim.x+
 		threadIdx.x+threadIdx.y*blockDim.x) ;

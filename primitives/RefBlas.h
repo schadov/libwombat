@@ -1,11 +1,12 @@
 #pragma once
 
 
-#define BYTE_SIZE N*sizeof(Real)
 
-struct MKLBlas
+
+template<class Real> struct RefBlas
 {
-	typedef BlasCommon::FloatType Real;
+	typedef Real FloatType;
+#define BYTE_SIZE N*sizeof(Real)
 	static const int one = 1;
 
 	/************************************************************************/
@@ -26,7 +27,7 @@ struct MKLBlas
 	static void scal(const unsigned int  N, const Real alpha, Real* x)
 	{
 		for (unsigned int i=0;i<N;++i){
-			x[i]*=alpha
+			x[i]*=alpha;
 		}		
 	}
 
@@ -37,14 +38,14 @@ struct MKLBlas
 		)
 	{
 		for (unsigned int i=0;i<N;++i){
-			y[i] += alpha*x[y]
+			y[i] += alpha*x[i];
 		}	
 	}
 
-	static void scopy(const unsigned int N,const Real *x, Real* y)
+	static void copy(const unsigned int N,const Real *x, Real* y)
 	{
 		for (unsigned int i=0;i<N;++i){
-			y[i] = x[y]
+			y[i] = x[i];
 		}
 	}
 
@@ -84,7 +85,7 @@ struct MKLBlas
 	/* lev2                                                                 */
 	/************************************************************************/
 
-	static void spmv_crs(BlasCommon::CRS_matrix A,Real* x,Real* y)
+	/*static void spmv_crs(BlasCommon::CRS_matrix<Real> A,Real* x,Real* y)
 	{
 		for (unsigned int i=0;i<A.nrows;++i)
 		{
@@ -95,13 +96,13 @@ struct MKLBlas
 			}
 			y[i] = s;
 		}
-	}
+	}*/
 
-	static void spmv_crs(const SparseMatrixCRS& A,Real* x,Real* y)
+	/*static void spmv_crs(const SparseMatrixCRS<Real>& A,Real* x,Real* y)
 	{
 		BlasCommon::CRS_matrix a={&A.data_[0],&A.colind_[0],&A.rowptr_[0],A.rows()};
 		return spmv_crs(a,x,y)
-	}
+	}*/
 
 };
 

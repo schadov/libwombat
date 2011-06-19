@@ -45,7 +45,7 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="4"
@@ -63,7 +63,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="libiomp5mt.lib mkl_sequential.lib mkl_intel_c.lib mkl_core.lib cublas.lib cuda.lib cudart.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="Z:\Program Files\Intel\MKL\10.1.0.018\ia32\lib\;$(INTEL_DEF_IA32_INSTALL_DIR)TBB\ia32\vc9\Lib"
+				AdditionalLibraryDirectories="Z:\Program Files\Intel\MKL\10.1.0.018\ia32\lib\;$(INTEL_DEF_IA32_INSTALL_DIR)TBB\Lib\ia32\vc9"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -359,6 +359,38 @@
 				>
 				<File
 					RelativePath=".\DenseMatrix.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Helper"
+				>
+				<File
+					RelativePath=".\types.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="ODE Solvers"
+				>
+				<File
+					RelativePath=".\Euler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\implicit_step.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ode_solver.h"
+					>
+				</File>
+				<File
+					RelativePath=".\rk.h"
+					>
+				</File>
+				<File
+					RelativePath=".\StepSolverBase.h"
 					>
 				</File>
 			</Filter>

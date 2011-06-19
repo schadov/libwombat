@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<VisualStudioProject
+	ProjectType="Intel C++ Project"
+	Version="12.0"
+	Name="primitives"
+	ProjectGUID="{59D42B83-033E-47FD-BD39-F250D0B34667}"
+	VCNestedProjectGUID="{4D001CF4-A9C8-4823-A880-17770F1FB848}"
+	VCNestedProjectFileName="primitives.vcproj"
+	>
+	<Configurations>
+		<Configuration
+			Name="Release|Win32"
+			>
+			<Tool
+				Name="CppCmplrTool"
+				UseIntelOptimizedHeaders="true"
+			/>
+		</Configuration>
+	</Configurations>
+	<Files/>
+</VisualStudioProject>
