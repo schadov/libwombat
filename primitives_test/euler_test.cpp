@@ -21,7 +21,7 @@ TEST(EulerTest,SolvesTestEq1){
 		equation,
 		init.data(),
 		result.data()
-		);
+	);
 
 	const float epsilon = result[0] * step;
 	EXPECT_EQ(epsilon > 0,true);

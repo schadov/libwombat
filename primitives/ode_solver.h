@@ -7,7 +7,7 @@
 
 template<class RealT,
 	template<class Breal> class BlasT,
-	template<class Blas,class RealT,class Vector,class Func> class StepSolver,
+	template<class Blas,class RealT,class Vector,class Func,class History> class StepSolver,
 	class FuncT,
 	class VectorT
 >
@@ -32,12 +32,14 @@ void solve_fixedstep(
 	VectorT &x = result;
 	Blas::copy(N,init,x);
 	
-	const unsigned int history_length = StepSolver<Blas,RealT,VectorT,FuncT>::history_length();
+	typedef StepSolver<Blas,RealT,VectorT,FuncT,SimpleBlasDeque<RealT,Blas> > StepSolver;
+
+	const unsigned int history_length = StepSolver::history_length();
 	SimpleBlasDeque<RealT,Blas> history(history_length);
 
 	for(uint64_t ti=ibegin+ih;ti<iend;ti+=ih){
 		RealT t = ti/(RealT)factor;
-		StepSolver<Blas,RealT,VectorT,FuncT>::call(N,t,h,x,F);
+		StepSolver::call(N,t,h,x,F,&history);
 		if(history_length>1){
 			history.push(N,x);
 		}

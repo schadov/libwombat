@@ -1,9 +1,9 @@
 #pragma once
 #include "StepSolverBase.h"
 
-template <class Blas,class RealT,class Vector,class Func>
+template <class Blas,class RealT,class Vector,class Func,class History>
 struct Rk4Step : public StepSolverBase<Blas>{
-	static void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F){
+	static void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
 		Vector k1,k2,k3,k4;
 
 		Vector tmp;

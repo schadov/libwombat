@@ -118,7 +118,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -178,6 +178,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\lu_test.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\primitives_test.cpp"
 				>
 			</File>
@@ -209,6 +213,10 @@
 			</File>
 			<File
 				RelativePath=".\test_functions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\test_linear_systems.h"
 				>
 			</File>
 		</Filter>

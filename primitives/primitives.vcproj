@@ -329,6 +329,10 @@
 			<Filter
 				Name="LinearSolvers"
 				>
+				<File
+					RelativePath=".\lin_solve.h"
+					>
+				</File>
 				<Filter
 					Name="Iterative"
 					>
@@ -350,6 +354,14 @@
 					</File>
 					<File
 						RelativePath=".\hybrids.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Direct"
+					>
+					<File
+						RelativePath=".\lu.h"
 						>
 					</File>
 				</Filter>
@@ -393,6 +405,10 @@
 					RelativePath=".\StepSolverBase.h"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="Nonlinear"
+				>
 			</Filter>
 		</Filter>
 		<Filter

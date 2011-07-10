@@ -1,9 +1,9 @@
 #pragma once
 #include "StepSolverBase.h"
 
-template <class Blas,class RealT,class Vector,class Func>
+template <class Blas,class RealT,class Vector,class Func, class History>
 struct EulerStep: public StepSolverBase<Blas>{
-	static void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F){
+	static void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
 		//x = x + h*F(t,x);
 		MyBlasVector tmp(N);
 		F(t,x,tmp);
@@ -12,9 +12,9 @@ struct EulerStep: public StepSolverBase<Blas>{
 };
 
 
-template <class Blas,class RealT,class Vector,class Func>
+template <class Blas,class RealT,class Vector,class Func,class History>
 struct HeunStep : public StepSolverBase<Blas>{
-	static void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F){
+	static void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
 		//x = x+ h/(real_t)2.*(F(t,x)+F(t+h,x+h*F(t,x)));
 		MyBlasVector ftx(N);
 		F(t,x,ftx);					//ftx = F(t,x)
@@ -32,6 +32,39 @@ struct HeunStep : public StepSolverBase<Blas>{
 	}
 };
 
+
+/*
+template<class RealT,class Func,class History>
+struct EulerImplicitFunctor{
+	RealT* yn_1;
+	RealT h;
+	Func f;
+	RealT t;
+
+	EulerImplicitFunctor(
+		RealT t,
+		History *y,
+		RealT h,
+		Func f
+	):yn_1((*y)[0]),
+			h(h),
+			f(f),
+			t(t)
+	{}
+
+	void operator()(const Vector &y){
+		return (RealT)1./h*(y - yn_1) - f(t,y);
+	}
+};*/
+
+
+/*
+template <class Blas,class RealT,class Vector,class Func,class History>
+struct EulerImplicitStep : public ImplicitStepSolverBase<Blas,EulerImplicitFunctor>{
+	static void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
+		ImplicitStepSolverBase<Blas,EulerImplicitFunctor>::call()
+	}
+};*/
 
 //template<class RealT>
 //struct EulerImplicitClass{

@@ -75,6 +75,7 @@ public:
 
 template<class Blas> 
 class BlasVector{
+protected:
 	typename Blas::FloatType* data_;
 	unsigned int sz_;
 
@@ -104,6 +105,35 @@ public:
 
 	operator typename Blas::FloatType*(){
 		return data_;
+	}
+
+	operator typename const Blas::FloatType*() const{
+		return data_;
+	}
+
+};
+
+template<class Blas> class BlasMatrix: public BlasVector<Blas>{
+	unsigned int dim_;
+public:
+	BlasMatrix(unsigned int N):BlasVector(N*N),dim_(N){}
+
+	typename Blas::FloatType& operator()(unsigned int i,unsigned int j){
+		return data_[i*dim_+j];
+	}
+
+	typename const Blas::FloatType& operator()(unsigned int i,unsigned int j) const{
+		return data_[i*dim_+j];
+	}
+
+};
+
+template<class Blas> class BlasMatrixTransponsed: public BlasVector<Blas>{
+public:
+	BlasMatrixTransponsed(unsigned int N):BlasVector(N*N){}
+
+	typename Blas::FloatType& operator()(unsigned int i,unsigned int j){
+		return data_[j*N+i];
 	}
 
 };
