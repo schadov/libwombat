@@ -126,6 +126,15 @@ public:
 		return data_[i*dim_+j];
 	}
 
+	typename Blas::FloatType* as_vector(){
+		return data_;
+	}
+
+	typename const Blas::FloatType* as_vector() const{
+		return data_;
+	}
+
+
 };
 
 template<class Blas> class BlasMatrixTransponsed: public BlasVector<Blas>{

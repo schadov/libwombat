@@ -378,6 +378,10 @@
 				Name="Helper"
 				>
 				<File
+					RelativePath=".\defaults.h"
+					>
+				</File>
+				<File
 					RelativePath=".\types.h"
 					>
 				</File>
@@ -409,6 +413,14 @@
 			<Filter
 				Name="Nonlinear"
 				>
+				<File
+					RelativePath=".\jacobian.h"
+					>
+				</File>
+				<File
+					RelativePath=".\newton.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter

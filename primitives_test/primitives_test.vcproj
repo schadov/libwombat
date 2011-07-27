@@ -182,6 +182,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\newton_solver_test.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\primitives_test.cpp"
 				>
 			</File>
