@@ -394,6 +394,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\euler_implicit.h"
+					>
+				</File>
+				<File
 					RelativePath=".\implicit_step.h"
 					>
 				</File>

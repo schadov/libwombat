@@ -157,13 +157,13 @@ template<class RealT,class Blas> class SimpleBlasDeque{
 		RealT * clone_data;
 		Blas::allocate(N,clone_data);
 		Blas::copy(N,t,clone_data);
-		data_.push_back(t);
+		data_.push_back(clone_data);
 	}
 
 public:
 	SimpleBlasDeque(unsigned int sz):sz_(0),noccupied_(0){
-		data_.resize(sz);
-		sz_ = data_.size();
+		//data_.resize(sz);
+		sz_ = sz;
 	}
 
 	void push(unsigned int N,  RealT* t){
@@ -177,7 +177,11 @@ public:
 		clone_and_push(N,t);
 	}
 
-	RealT operator [](unsigned int n){
+	RealT* last()const{
+		return data_[noccupied_-1];
+	}
+
+	RealT* operator [](unsigned int n){
 		assert(n<noccupied_);
 		return data_[n];
 	}
@@ -190,3 +194,32 @@ public:
 
 
 };
+
+
+/*
+template<class RealT> class VectorDeque{
+	std::vector<RealT> data_;
+	unsigned int vector_length_;
+	unsigned int vector_number_;
+
+	unsigned int total_sz()const{
+		return vector_number_ * vector_length_;
+	}
+
+	RealT* get_nth(unsigned int n){
+		unsigned int pos = n * vector_length_;
+		assert(n<total_sz())
+		return &data_[pos];
+	} 
+
+public:
+	VectorDeque(unsigned int vector_length, unsigned int max_sz):
+	  vector_length_(vector_length),vector_number_(max_sz)
+	  {
+		  data_.resize(total_sz());
+	  }
+
+	  void push(unsigned int N, RealT* data){
+		assert()
+	  }
+};*/
