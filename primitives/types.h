@@ -196,11 +196,14 @@ public:
 };
 
 
-/*
+
 template<class RealT> class VectorDeque{
 	std::vector<RealT> data_;
 	unsigned int vector_length_;
 	unsigned int vector_number_;
+
+	unsigned int begin_;
+	unsigned int end_;
 
 	unsigned int total_sz()const{
 		return vector_number_ * vector_length_;
@@ -212,14 +215,53 @@ template<class RealT> class VectorDeque{
 		return &data_[pos];
 	} 
 
+	void push_vector(unsigned int pos,RealT *v){
+		memcpy(&data_[pos],v,vector_length_*sizeof(RealT));
+	}
+
+	unsigned int add_with_wrap(unsigned int n,unsigned int m) const{
+		if(n+m>=total_sz()){
+			return n+m - total_sz();
+		} 
+		else return n+m;
+	}
+
+
 public:
 	VectorDeque(unsigned int vector_length, unsigned int max_sz):
 	  vector_length_(vector_length),vector_number_(max_sz)
 	  {
 		  data_.resize(total_sz());
+		  begin_ = 0;
+		  end_ = 0;
 	  }
 
-	  void push(unsigned int N, RealT* data){
-		assert()
+	  void push(RealT* data){
+		  if(end_<total_sz()){
+			push_vector(end_,data);
+			end_ = end_ + vector_length_;
+		  }
+		  else{
+			  end_ = add_with_wrap(end_,vector_length_);
+			  begin_ = add_with_wrap(begin_,vector_length_);
+			  push_vector(end_-vector_length_,data);
+		  }
 	  }
-};*/
+
+	  unsigned int get_N()const{
+		return vector_length_;
+	  }
+
+	  unsigned int get_capacity()const{
+		  return vector_number_;
+	  }
+
+	  const RealT* get_vector(unsigned int n)const{
+		  return &data_[add_with_wrap(begin_,n*vector_length_)];
+	  }
+
+	  RealT* last() const{
+		  return const_cast<RealT*>(&data_[end_-vector_length_]);
+	  }
+
+};

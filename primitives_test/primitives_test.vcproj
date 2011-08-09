@@ -205,6 +205,10 @@
 				RelativePath=".\vector_test.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\VectorDequeTest.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
