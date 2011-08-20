@@ -205,6 +205,8 @@ template<class RealT> class VectorDeque{
 	unsigned int begin_;
 	unsigned int end_;
 
+	unsigned int occupied_items_;
+
 	unsigned int total_sz()const{
 		return vector_number_ * vector_length_;
 	}
@@ -226,10 +228,17 @@ template<class RealT> class VectorDeque{
 		else return n+m;
 	}
 
+	unsigned int add_with_wrap_e(unsigned int n,unsigned int m) const{
+		if(n+m>total_sz()){
+			return n+m - total_sz();
+		} 
+		else return n+m;
+	}
+
 
 public:
 	VectorDeque(unsigned int vector_length, unsigned int max_sz):
-	  vector_length_(vector_length),vector_number_(max_sz)
+	  vector_length_(vector_length),vector_number_(max_sz),occupied_items_(0)
 	  {
 		  data_.resize(total_sz());
 		  begin_ = 0;
@@ -237,12 +246,13 @@ public:
 	  }
 
 	  void push(RealT* data){
-		  if(end_<total_sz()){
+		  if(occupied_items_*vector_length_<total_sz()){
 			push_vector(end_,data);
 			end_ = end_ + vector_length_;
+			occupied_items_++;
 		  }
 		  else{
-			  end_ = add_with_wrap(end_,vector_length_);
+			  end_ = add_with_wrap_e(end_,vector_length_);
 			  begin_ = add_with_wrap(begin_,vector_length_);
 			  push_vector(end_-vector_length_,data);
 		  }
@@ -262,6 +272,10 @@ public:
 
 	  RealT* last() const{
 		  return const_cast<RealT*>(&data_[end_-vector_length_]);
+	  }
+
+	  const RealT* last(unsigned int n) const{
+		  return get_vector(get_capacity()-n);
 	  }
 
 };

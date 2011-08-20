@@ -106,3 +106,64 @@ struct EulerTrapezoidStep :
 		return 2;
 	}
 };
+
+
+//////////////////////////////////////////////////////////////////////////
+template<class RealT,template<class T> class Blas ,class Func,class History>
+struct SimpsonImplicitFunctor{
+	const RealT* yn_1;
+    const RealT* yn;
+	RealT h_;
+	Func f;
+	RealT t;
+	unsigned int N_;
+
+	SimpsonImplicitFunctor(
+		unsigned int N,
+		RealT t,
+		const History *y,
+		RealT h,
+		Func f
+		):yn_1(y->last(2)),yn(y->last()),
+		h_(h),
+		f(f),
+		t(t), N_(N)
+	{}
+
+	//return 1./h*((y - yn_1)) - (f(t,y)+f(t-2*h,yn_1)+4*f(t-h,yn))/3.;
+	void operator()(RealT* y, RealT* out) const{
+		typedef Blas<RealT> Blas; 
+		BlasVector<Blas> fty(N_);
+		f(t,y,fty);										
+
+		BlasVector<Blas> fty1(N_);
+		f(t-2*h_,yn_1,fty1);		
+
+		BlasVector<Blas> fty2(N_);
+		f(t-h_,yn,fty2);	
+
+		Blas::axpy(N_,1.0,fty1,fty);
+		Blas::axpy(N_,4.0,fty2,fty);
+
+		Blas::copy(N_,y,out);
+		Blas::axpy(N_,-1.0,yn_1,out);
+		Blas::scal(N_,(RealT)(1.0/h_),out);
+
+		Blas::axpy(N_,(RealT)(-1.0/3.0),fty,out);
+	}
+
+};
+
+
+template <template<class RealT> class Blas,class RealT,class Vector,class Func,class History>
+struct SimpsonImplicitStep :
+	public ImplicitStepSolverBase<RealT,Vector,Func,Blas,History,SimpsonImplicitFunctor<RealT,Blas,Func,History> >
+{
+	static void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
+		MyBaseSolver::call(N,t,h,x,F,history);
+	}
+
+	static unsigned int history_length(){
+		return 3;
+	}
+};

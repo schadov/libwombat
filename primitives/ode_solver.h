@@ -2,6 +2,7 @@
 
 #include <boost/cstdint.hpp>
 #include "BlasCommon.h"
+#include "rk.h"
 
 //typedef void (double,double,double*,double*) AAA; 
 
@@ -26,7 +27,7 @@ void solve_fixedstep(
 
 	const uint64_t factor	=	1000000ui64;
 	const uint64_t ih		=	(uint64_t)(h*factor+0.5);
-	const uint64_t ibegin	=	(uint64_t)(dbegin*factor+0.5);
+	uint64_t ibegin	=	(uint64_t)(dbegin*factor+0.5);
 	const uint64_t iend		=	(uint64_t)(dend*factor+0.5);
 
 	VectorT &x = result;
@@ -34,11 +35,23 @@ void solve_fixedstep(
 	
 	typedef StepSolver<BlasT,RealT,VectorT,FuncT,VectorDeque<RealT> > StepSolver;
 
-	const unsigned int history_length = StepSolver::history_length();
-	VectorDeque<RealT> history(N,history_length);
-	if(history_length>1){
+	//init history
+	const unsigned int history_length = StepSolver::history_length() ;
+	VectorDeque<RealT> history(N,history_length - 1);
+	if(history_length>1){	//requires at least 1 point of history, init with initial value
 		history.push(init);
 	}
+	if(history_length>2){	//requires warmup
+		const uint64_t warmup_end = ibegin+ih*(history_length-1);
+		for(uint64_t ti=ibegin+ih; ti<warmup_end; ti+=ih){
+			RealT t = ti/(RealT)factor;
+			Rk4Step<BlasT,RealT,VectorT,FuncT,VectorDeque<RealT> >::call(N,t,h,x,F,&history);
+			history.push(x);
+		}
+		ibegin = warmup_end - ih;
+	}
+
+	//main solver loop
 	for(uint64_t ti=ibegin+ih;ti<iend;ti+=ih){
 		RealT t = ti/(RealT)factor;
 		StepSolver::call(N,t,h,x,F,&history);
@@ -46,5 +59,4 @@ void solve_fixedstep(
 			history.push(x);
 		}
 	}
-
 }

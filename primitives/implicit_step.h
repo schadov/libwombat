@@ -16,6 +16,6 @@ protected:
 
 	static void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History * history){
 		SolverFunctor solver(N,t,history,h,F);
-		solve_newton<RealT,NewtonSolver,Blas,LUsolver,JacobyAuto>(N,solver,x,20);
+		solve_newton<RealT,NewtonSolver,Blas,LUsolver,JacobyAuto>(N,solver,x,30);
 	}
 };
