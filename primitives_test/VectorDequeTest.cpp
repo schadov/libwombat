@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
 #include "../primitives/types.h"
 
-#define SCL_SECURE_NO_WARNINGS 0
-
 TEST(VectorDequeTest,AllocatesAndSetsCorrectSize){
 	VectorDeque<float> v(5,7);
 	EXPECT_EQ(v.get_N(),5);
