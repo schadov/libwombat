@@ -35,8 +35,12 @@ void solve_fixedstep(
 	
 	typedef StepSolver<BlasT,RealT,VectorT,FuncT,VectorDeque<RealT> > StepSolver;
 
+	StepSolver solver;
+
+	solver.init(N,init);
+
 	//init history
-	const unsigned int history_length = StepSolver::history_length() ;
+	const unsigned int history_length = solver.history_length() ;
 	VectorDeque<RealT> history(N,history_length - 1);
 	if(history_length>1){	//requires at least 1 point of history, init with initial value
 		history.push(init);
@@ -45,7 +49,8 @@ void solve_fixedstep(
 		const uint64_t warmup_end = ibegin+ih*(history_length-1);
 		for(uint64_t ti=ibegin+ih; ti<warmup_end; ti+=ih){
 			RealT t = ti/(RealT)factor;
-			Rk4Step<BlasT,RealT,VectorT,FuncT,VectorDeque<RealT> >::call(N,t,h,x,F,&history);
+			Rk4Step<BlasT,RealT,VectorT,FuncT,VectorDeque<RealT> > warmup_solver;
+			warmup_solver.call(N,t,h,x,F,&history);
 			history.push(x);
 		}
 		ibegin = warmup_end - ih;
@@ -54,7 +59,7 @@ void solve_fixedstep(
 	//main solver loop
 	for(uint64_t ti=ibegin+ih;ti<iend;ti+=ih){
 		RealT t = ti/(RealT)factor;
-		StepSolver::call(N,t,h,x,F,&history);
+		solver.call(N,t,h,x,F,&history);
 		if(history_length>1){
 			history.push(x);
 		}

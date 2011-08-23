@@ -33,7 +33,6 @@ template <template<class RealT> class Blas,class RealT,class Vector,class Func,c
 		init.data(),
 		result.data()
 		);
-
 	const float epsilon = result[0] * step;
 	EXPECT_EQ(epsilon > 0,true);
 	EXPECT_EQ(std::abs(dend*dend - result[0])<epsilon, true);
@@ -49,7 +48,7 @@ template <template<class RealT> class Blas,class RealT,class Vector,class Func,c
 	const double step = 0.001;
 	const double dend = 3.0;
 
-	solve_fixedstep<double,RefBlas,EulerImplicitStep>(ndim,
+	solve_fixedstep<double,RefBlas,Solver>(ndim,
 		0.0f,dend,
 		step,
 		sin_eq,

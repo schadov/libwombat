@@ -96,11 +96,18 @@ protected:
 
 public:
 	BlasVector(unsigned int N):sz_(0),data_(0){
-		allocate(N);
+		reset(N);
+	}
+
+	BlasVector():sz_(0),data_(0){
 	}
 
 	~BlasVector(){
 		deallocate();
+	}
+
+	void reset(unsigned int N){
+		allocate(N);
 	}
 
 	operator typename Blas::FloatType*(){
@@ -118,6 +125,13 @@ template<class Blas> class BlasMatrix: public BlasVector<Blas>{
 public:
 	BlasMatrix(unsigned int N):BlasVector(N*N),dim_(N){}
 
+	BlasMatrix():BlasVector(),dim_(0){}
+
+	void reset(unsigned int N){
+		dim_ = N;
+		BlasVector::reset(N*N);
+	}
+
 	typename Blas::FloatType& operator()(unsigned int i,unsigned int j){
 		return data_[i*dim_+j];
 	}
@@ -134,7 +148,10 @@ public:
 		return data_;
 	}
 
-
+	unsigned int get_dim()const{
+		return dim_;
+	}
+	
 };
 
 template<class Blas> class BlasMatrixTransponsed: public BlasVector<Blas>{

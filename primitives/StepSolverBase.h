@@ -5,7 +5,11 @@ class StepSolverBase{
 protected:
 	typedef BlasVector<Blas> MyBlasVector;
 public:
-	static unsigned int history_length(){
+	unsigned int history_length(){
 		return 1;
+	}
+
+	void init(unsigned int N,const typename Blas::FloatType*){
+		return ;
 	}
 };

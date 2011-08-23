@@ -43,11 +43,11 @@ template <template<class RealT> class Blas,class RealT,class Vector,class Func,c
 struct EulerImplicitStep :
 	public ImplicitStepSolverBase<RealT,Vector,Func,Blas,History,EulerImplicitFunctor<RealT,Blas,Func,History> >
 {
-	static void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
+	void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
 		MyBaseSolver::call(N,t,h,x,F,history);
 	}
 
-	static unsigned int history_length(){
+	unsigned int history_length(){
 		return 2;
 	}
 };
@@ -98,11 +98,11 @@ template <template<class RealT> class Blas,class RealT,class Vector,class Func,c
 struct EulerTrapezoidStep :
 	public ImplicitStepSolverBase<RealT,Vector,Func,Blas,History,EulerTrapezoidFunctor<RealT,Blas,Func,History> >
 {
-	static void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
+	void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
 		MyBaseSolver::call(N,t,h,x,F,history);
 	}
 
-	static unsigned int history_length(){
+	unsigned int history_length(){
 		return 2;
 	}
 };
@@ -159,11 +159,11 @@ template <template<class RealT> class Blas,class RealT,class Vector,class Func,c
 struct SimpsonImplicitStep :
 	public ImplicitStepSolverBase<RealT,Vector,Func,Blas,History,SimpsonImplicitFunctor<RealT,Blas,Func,History> >
 {
-	static void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
+	void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
 		MyBaseSolver::call(N,t,h,x,F,history);
 	}
 
-	static unsigned int history_length(){
+	unsigned int history_length(){
 		return 3;
 	}
 };
@@ -223,11 +223,11 @@ template <template<class RealT> class Blas,class RealT,class Vector,class Func,c
 struct TickImplicitStep :
 	public ImplicitStepSolverBase<RealT,Vector,Func,Blas,History,TickImplicitFunctor<RealT,Blas,Func,History> >
 {
-	static void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
+	void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
 		MyBaseSolver::call(N,t,h,x,F,history);
 	}
 
-	static unsigned int history_length(){
+	unsigned int history_length(){
 		return 3;
 	}
 };
@@ -291,11 +291,11 @@ template <template<class RealT> class Blas,class RealT,class Vector,class Func,c
 struct ThreeEightsImplicitStep :
 	public ImplicitStepSolverBase<RealT,Vector,Func,Blas,History,ThreeEightsFunctor<RealT,Blas,Func,History> >
 {
-	static void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
+    void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
 		MyBaseSolver::call(N,t,h,x,F,history);
 	}
 
-	static unsigned int history_length(){
+	unsigned int history_length() const{
 		return 4;
 	}
 };

@@ -402,6 +402,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\irk.h"
+					>
+				</File>
+				<File
 					RelativePath=".\ode_solver.h"
 					>
 				</File>
