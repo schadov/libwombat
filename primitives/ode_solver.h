@@ -33,7 +33,7 @@ void solve_fixedstep(
 	VectorT &x = result;
 	Blas::copy(N,init,x);
 	
-	typedef StepSolver<BlasT,RealT,VectorT,FuncT,VectorDeque<RealT> > StepSolver;
+	typedef StepSolver<BlasT,RealT,VectorT,FuncT,VectorDeque<BlasT<RealT> > > StepSolver;
 
 	StepSolver solver;
 
@@ -41,7 +41,7 @@ void solve_fixedstep(
 
 	//init history
 	const unsigned int history_length = solver.history_length() ;
-	VectorDeque<RealT> history(N,history_length - 1);
+	VectorDeque<BlasT<RealT> > history(N,history_length - 1);
 	if(history_length>1){	//requires at least 1 point of history, init with initial value
 		history.push(init);
 	}
@@ -49,7 +49,7 @@ void solve_fixedstep(
 		const uint64_t warmup_end = ibegin+ih*(history_length-1);
 		for(uint64_t ti=ibegin+ih; ti<warmup_end; ti+=ih){
 			RealT t = ti/(RealT)factor;
-			Rk4Step<BlasT,RealT,VectorT,FuncT,VectorDeque<RealT> > warmup_solver;
+			Rk4Step<BlasT,RealT,VectorT,FuncT,VectorDeque<BlasT<RealT> > > warmup_solver;
 			warmup_solver.call(N,t,h,x,F,&history);
 			history.push(x);
 		}

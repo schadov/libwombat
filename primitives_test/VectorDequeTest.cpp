@@ -1,8 +1,10 @@
 #include <gtest/gtest.h>
 #include "../primitives/types.h"
+#include "../primitives/RefBlas.h"
+
 
 TEST(VectorDequeTest,AllocatesAndSetsCorrectSize){
-	VectorDeque<float> v(5,7);
+	VectorDeque<RefBlas<float> > v(5,7);
 	EXPECT_EQ(v.get_N(),5);
 	EXPECT_EQ(v.get_capacity(),7);
 }
@@ -12,7 +14,7 @@ TEST(VectorDequeTest,AllocatesAndSetsCorrectSize){
 }
 
 TEST(VectorDequeTest,Push){
-	VectorDeque<float> v(3,3);
+	VectorDeque<RefBlas<float> > v(3,3);
 	
 	float test_data1[] = {1,1,1};
 	float test_data2[] = {2,2,2};

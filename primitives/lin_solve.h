@@ -1,4 +1,4 @@
-
+#pragma once
 
 template<class RealT,
 	template<class BT> class Blas,

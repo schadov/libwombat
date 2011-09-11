@@ -1,7 +1,7 @@
 template<class Blas,class RealT,class Matrix,class Vector>
 class LUsolver{
-
-	void lu_decompose(unsigned int N,Matrix &A)
+protected:
+	void decompose(unsigned int N,Matrix &A)
 	{
 		typedef unsigned int uint;
 		for (uint k=0; k<N; ++k){
@@ -14,7 +14,7 @@ class LUsolver{
 		}
 	}
 
-	void lu_substitute(unsigned int N,const Matrix& A, const Vector& b, Vector& x)
+	void substitute(unsigned int N,const Matrix& A, const Vector& b, Vector& x)
 	{
 		typedef unsigned int uint;
 		BlasVector<Blas> y(N);
@@ -37,15 +37,15 @@ class LUsolver{
 	}
 
 	void lu_solve_inplace(unsigned int N, Matrix& A, const Vector& b, Vector& x0){
-		lu_decompose(N,A);
-		lu_substitute(N,A,b,x0);
+		decompose(N,A);
+		substitute(N,A,b,x0);
 	}
 
 	void lu_solve(unsigned int N, const Matrix& A, const Vector& b, Vector& x0){
 		BlasMatrix<Blas> copy(N);
 		Blas::copy(N*N,A,copy);
-		lu_decompose(N,copy);
-		lu_substitute(N,copy,b,x0);
+		decompose(N,copy);
+		substitute(N,copy,b,x0);
 	}
 
 
@@ -137,3 +137,42 @@ public:
 	}
 
 };
+
+
+/////////////////////
+
+template<template<class Blas,class RealT,class Matrix,class Vector>class Solver, class Blas,class RealT,class Matrix,class Vector>
+class LinearSolverUtils: public Solver<Blas,RealT,Matrix,Vector>
+{
+public:
+	void decompose(unsigned int N, Matrix& A, Vector &pi){
+		return Solver<Blas,RealT,Matrix,Vector>::decompose(N,A,pi);
+	}
+
+	void decompose(unsigned int N, Matrix& A){
+		return Solver<Blas,RealT,Matrix,Vector>::decompose(N,A);
+	}
+
+	void substitute(unsigned int N,const Matrix& A, const Vector& b, Vector& x){
+		return Solver<Blas,RealT,Matrix,Vector>::substitute(N,A,b,x);
+	}	
+};
+
+
+template<class Solver, class Blas,class RealT,class Matrix,class Vector>
+class LinearSolverUtils2: public Solver
+{
+public:
+	void decompose(unsigned int N, Matrix& A, Vector &pi){
+		return Solver::decompose(N,A,pi);
+	}
+
+	void decompose(unsigned int N, Matrix& A){
+		return Solver::decompose(N,A);
+	}
+
+	void substitute(unsigned int N,const Matrix& A, const Vector& b, Vector& x){
+		return Solver::substitute(N,A,b,x);
+	}	
+};
+

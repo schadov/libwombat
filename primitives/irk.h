@@ -63,8 +63,6 @@ struct IrkFunctor{
 		}	
 
 	}
-
-
 };
 
 template <template<class RealT> class Blas,class RealT,class Vector,class Func,class History>

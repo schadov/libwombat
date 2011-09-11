@@ -214,7 +214,8 @@ public:
 
 
 
-template<class RealT> class VectorDeque{
+template<class Blas> class VectorDeque{
+	typedef typename Blas::FloatType RealT;
 	std::vector<RealT> data_;
 	unsigned int vector_length_;
 	unsigned int vector_number_;
@@ -235,7 +236,9 @@ template<class RealT> class VectorDeque{
 	} 
 
 	void push_vector(unsigned int pos,RealT *v){
-		memcpy(&data_[pos],v,vector_length_*sizeof(RealT));
+		//memcpy(&data_[pos],v,vector_length_*sizeof(RealT));
+		const unsigned int sz = vector_length_;
+		Blas::copy(sz,v,&data_[pos]);
 	}
 
 	unsigned int add_with_wrap(unsigned int n,unsigned int m) const{
@@ -284,6 +287,10 @@ public:
 	  }
 
 	  const RealT* get_vector(unsigned int n)const{
+		  return &data_[add_with_wrap(begin_,n*vector_length_)];
+	  }
+
+	  RealT* get_vector_pointer(unsigned int n){
 		  return &data_[add_with_wrap(begin_,n*vector_length_)];
 	  }
 

@@ -390,6 +390,10 @@
 				Name="ODE Solvers"
 				>
 				<File
+					RelativePath=".\dirk.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Euler.h"
 					>
 				</File>
@@ -411,6 +415,10 @@
 				</File>
 				<File
 					RelativePath=".\rk.h"
+					>
+				</File>
+				<File
+					RelativePath=".\rkc.h"
 					>
 				</File>
 				<File
