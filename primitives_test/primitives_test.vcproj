@@ -177,13 +177,6 @@
 			<File
 				RelativePath=".\dirk_test.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\euler_implicit_test.cpp"
@@ -211,6 +204,10 @@
 			</File>
 			<File
 				RelativePath=".\rk4_test.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SkvortsovTest.cpp"
 				>
 			</File>
 			<File

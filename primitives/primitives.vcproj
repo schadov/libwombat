@@ -422,6 +422,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Skvortsov.h"
+					>
+				</File>
+				<File
 					RelativePath=".\StepSolverBase.h"
 					>
 				</File>

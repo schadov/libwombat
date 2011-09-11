@@ -185,39 +185,117 @@ namespace detail{
 		}
 
 	};
+
+	template<template<class R> class Blas, class RealT,class Function> struct W{
+		unsigned int s;
+		unsigned int j;
+
+		W(unsigned int s,unsigned int j):
+		s(s),j(j)
+		{}
+
+		point operator()(
+			unsigned int N,
+			RealT tm,
+			RealT h,
+			const Function& F ,
+			RealT* yn, 
+			RealT* out, 
+			const RKCCoeff& coeff,
+			W_buf & buf
+			)
+		{
+			const std::pair<bool,RealT*> bv = buf.find(j);
+			if(bv.first)
+				return bv.second;
+
+			typedef BlasVector<Blas<RealT> > BlasVector;
+			BlasVector W0(N);
+			BlasVector Wj_1(N);
+			BlasVector Wj_2(N);
+			W(s,0)()(tm,h,F,yn,W0,coeff,buf);
+			W(s,j-1)()(tm,h,F,yn,Wj_1,coeff,buf);
+			W(s,j-2)()(tm,h,F,yn,Wj_2,coeff,buf);
+
+			const point fv = F0calc?F0val:F(tm+coeff.c[0]*h,W0);
+
+			const point val = (1-coeff.mu[j]-coeff.nu[j])*W0 + coeff.mu[j]*Wj_1 + coeff.nu[j]*Wj_2
+				+ coeff.mu_tlde[j]*h*F(tm+coeff.c[j-1]*h,Wj_1)
+				+ coeff.gamma[j]*h*fv
+				;
+			if(!F0calc){
+				F0calc = true;
+				F0val = fv;
+			}
+
+			buf.add(j,val);
+			return val;
+		}
+	};
+
+	template<int s> struct W<s,0>{
+		__forceinline point operator()(
+			real_t tm,
+			real_t h,
+			pfunc F ,
+			point yn, 
+			const RKCCoeff<s>& coeff,
+			W_buf & buf
+			)throw()
+		{
+			const std::pair<bool,point> bv = buf.find(0);
+			if(bv.first)
+				return bv.second;
+
+			buf.add(0,yn);
+			return yn;
+		}
+	};
+
+	template<int s> struct W<s,1>{
+		__forceinline point operator()(
+			real_t tm,
+			real_t h,
+			pfunc F ,
+			point yn, 
+			const RKCCoeff<s>& coeff,
+			W_buf & buf
+			)throw()
+		{
+			const std::pair<bool,point> bv = buf.find(1);
+			if(bv.first)
+				return bv.second;
+			const point W0 = W<s,0>()(tm,h,F,yn,coeff,buf);
+			const point val =  W0 + h*coeff.mu_tlde[1]*F(tm+h*coeff.c[0],W0);
+			buf.add(1,val);
+			return val;	
+		}
+	};
 }
 
 template <template<class R> class Blas,class RealT,class Vector,class Func,class History>
 struct RKCStep : public StepSolverBase<Blas<RealT> >{
 
-	void init(unsigned int N,RealT * init){
-		unsigned int neqs = N;
-		unsigned int nstages = nstages_;
-		ks_.reset(neqs*nstages_);
+	const unsigned int s_ = 4;
 
-		for (unsigned int m =0; m< nstages;++m){
-			for (unsigned int j=0;j<neqs;++j){
-				ks_[j+m*neqs] = init[j];
-			}
-		}
+	void init(unsigned int N,RealT * init){
+		//RKCCoeff<s> coeff;
+		////coeff.init(2.f/13.f);
+		//coeff.init(4.f);
+		//W_buf buf;
+		RKCCoeff coeff(s_);
+		coeff.init(2.f/13.f);
+
 	}
 
 
 	static void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
-		//x = x+ h/(real_t)2.*(F(t,x)+F(t+h,x+h*F(t,x)));
-		typedef Blas<RealT> Blas;
-		MyBlasVector ftx(N);
-		F(t,x,ftx);					//ftx = F(t,x)
+		x=W<s,s>()(t,h,F,x,coeff,buf);
+		//x=W<s>(s,t,h,F,x,coeff,buf);
+		v.push_back(x);
+		F0calc = false;
+		buf.clear();
 
-		MyBlasVector y2(N);
-		Blas::copy(N,x,y2);
-		Blas::axpy(N,h,ftx,y2);		//x+h*F(t,x);  (y2= ftx*h + y2)
 
-		MyBlasVector ftx2(N);
-		F(t+h,y2,ftx2);				//F(t+h,x+h*F(t,x))
-
-		Blas::axpy(N,1.0,ftx,ftx2); //(F(t,x)+F(t+h,x+h*F(t,x)))
-
-		Blas::axpy(N,h/(RealT)2.0,ftx2,x);
 	}
 };
