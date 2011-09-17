@@ -258,3 +258,95 @@ struct Skvortsov2StepCPU : public StepSolverBase<Blas<RealT> >{
 
 	}
 };
+
+
+
+template <template<class R> class Blas,class RealT,class Vector,class Func,class History>
+struct Skvortsov3StepCPU : public StepSolverBase<Blas<RealT> >{
+
+	void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
+
+		typedef Blas<RealT> Blas;
+		typedef BlasVector<Blas> BlasVector;
+
+		const RealT alpha = static_cast<RealT>(0.001);
+
+		BlasVector k0(N);
+		F(t,x,k0);
+
+		//u1 = x + h/2*k0; 
+		//k1 = F(t+h/2,u1);
+		BlasVector u1(N);
+		Blas::copy(N,x,u1);
+		Blas::axpy(N,h/2,k0,u1);
+
+		const RealT t1 = t + h;
+		BlasVector k1(N);
+		F(t1,u1,k1);
+
+		//u2 = x + h*k0; 
+		//k2 = F(t1,u2);
+		BlasVector k2(N);
+		BlasVector u2(N);
+		Blas::copy(N,x,u2);
+		Blas::axpy(N,h,k0,u2);
+		F(t1,u1,k2);
+
+		//u3 = x + h*(2*k1-(k0+k1)/2);
+		//k3 = F(t1,u3);
+		BlasVector k3(N);
+		BlasVector u3(N);
+		Blas::copy(N,k0,k3);
+		Blas::copy(N,x,u3);
+		Blas::axpy(N,1.0,k1,k3);
+		Blas::scal(N,0.5,k3);
+		Blas::axpy(N,-2,k1,k3);
+		Blas::axpy(N,-h,k3,u3);
+		F(t1,u3,k3);
+
+		//u4 = x + h/6*(k0+4*k1-k2+2*k3);
+		//k4 = F(t1,u4);
+		BlasVector k4(N);
+		BlasVector u4(N);
+		Blas::copy(N,k0,k4);
+		Blas::axpy(N,4,k1,k4);
+		Blas::axpy(N,-1,k2,k4);
+		Blas::axpy(N,2,k3,k4);
+		
+		Blas::copy(N,x,u4);
+		Blas::axpy(N,h/6,k4,u4);
+
+		F(t1,u4,k4);
+
+		//u5 = u4+h*alpha*(k4-k3);
+		//k5 = F(t1,u5);
+		BlasVector k5(N);
+		BlasVector u5(N);
+		Blas::copy(N,k4,k5);
+		Blas::axpy(N,-1,k3,k5);
+
+		Blas::copy(N,u4,u5);
+		Blas::axpy(N,h*alpha,k5,u5);
+		F(t1,u5,k5);
+
+		for (unsigned int i=0;i<N;++i)
+		{	
+			RealT a = alpha*(k4[i]-k3[i]);
+			RealT b = k5[i] - k4[i];
+			RealT c;
+			if(abs(b)<=2.2*abs(a)){
+				if(b!=0) b = b/a;
+				c = static_cast<RealT>(1/4.+b/20.);
+			}
+			else{
+				a = a/b;
+				if(a<0) 
+					c = -a*(a*(a*(a*6+6)+3)+1);
+				else 
+					c = static_cast<RealT>(0.792*a);
+			}
+			x[i] = u4[i]+h*c*(k4[i]-k3[i]);
+		}
+
+	}
+};

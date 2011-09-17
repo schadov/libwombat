@@ -40,6 +40,13 @@ TEST(Skvortsov2Test,SolvesTestEq2CPU){
 	test_equation2<Skvortsov2StepCPU>();
 }
 
+//////////////////////////////////////////////////////////////////////////
 
+TEST(Skvortsov3Test,SolvesTestEq1CPU){
+	test_equation1<Skvortsov3StepCPU>();
+}
 
+TEST(Skvortsov3Test,SolvesTestEq2CPU){
+	test_equation2<Skvortsov3StepCPU>();
+}
 
