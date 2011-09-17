@@ -207,11 +207,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\rkc_test.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SkvortsovTest.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\stdafx.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\vector_array_test.cpp"
 				>
 			</File>
 			<File

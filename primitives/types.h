@@ -107,6 +107,8 @@ public:
 	}
 
 	void reset(unsigned int N){
+		if(sz_!=0 && data_!=0)
+			deallocate();
 		allocate(N);
 	}
 
@@ -216,7 +218,7 @@ public:
 
 template<class Blas> class VectorDeque{
 	typedef typename Blas::FloatType RealT;
-	std::vector<RealT> data_;
+	BlasVector<Blas> data_;
 	unsigned int vector_length_;
 	unsigned int vector_number_;
 
@@ -260,7 +262,8 @@ public:
 	VectorDeque(unsigned int vector_length, unsigned int max_sz):
 	  vector_length_(vector_length),vector_number_(max_sz),occupied_items_(0)
 	  {
-		  data_.resize(total_sz());
+		  data_.reset(total_sz());
+		 // std::fill(( RealT*)data_,data_+total_sz(),RealT(0));
 		  begin_ = 0;
 		  end_ = 0;
 	  }
@@ -286,6 +289,10 @@ public:
 		  return vector_number_;
 	  }
 
+	  unsigned int occupied_items()const{
+		  return occupied_items_;
+	  }
+
 	  const RealT* get_vector(unsigned int n)const{
 		  return &data_[add_with_wrap(begin_,n*vector_length_)];
 	  }
@@ -301,5 +308,73 @@ public:
 	  const RealT* last(unsigned int n) const{
 		  return get_vector(get_capacity()-n);
 	  }
+
+};
+
+
+template<class Blas> class VectorArray{
+	typedef typename Blas::FloatType RealT;
+	BlasVector<Blas> data_;
+
+	unsigned int vector_number_,vector_length_,size_;
+	unsigned int total_sz()const{
+		return vector_number_ * vector_length_;
+	}
+	void push_vector(unsigned int pos, const RealT *v){
+		const unsigned int sz = vector_length_;
+		Blas::copy(sz,v,&data_[pos]);
+	}
+	unsigned int get_address_of_vector(unsigned int n) const{
+		return vector_length_*n;
+	}
+public:
+	VectorArray(unsigned int vector_len, unsigned int capacity=0):
+	  vector_number_(capacity),vector_length_(vector_len)
+	{
+		reset(vector_len,capacity);	
+	}
+
+	VectorArray():vector_number_(0),vector_length_(0){
+
+	}
+
+	void reset(unsigned int vector_len, unsigned int capacity=0){
+		vector_length_ = vector_len;
+		vector_number_ = capacity;
+		size_ = 0;
+		data_.reset(total_sz());
+	}
+
+	RealT* get_vector_pointer(unsigned int n){
+		const unsigned int p = get_address_of_vector(n);
+		return &data_[p];
+	}
+
+	const RealT* get_vector(unsigned int n)const{
+		const unsigned int p = get_address_of_vector(n);
+		return &data_[p];
+	}
+
+	void push(const RealT* v){
+		if(size_>=vector_number_)
+			throw std::exception("overflow");
+		const unsigned int p = get_address_of_vector(size_);
+		push_vector(p,v);
+		size_++;
+	}
+
+	void set_at(unsigned int j,const RealT* v){
+		const unsigned int p = get_address_of_vector(j);
+		push_vector(p,v);
+	}
+
+	void clear(){
+		reset(vector_length_,vector_number_);
+	}
+
+	unsigned int occupied_items()const{
+		return size_;
+	}
+
 
 };

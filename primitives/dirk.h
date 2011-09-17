@@ -82,31 +82,17 @@ protected:
 		const unsigned int nequations = N;
 		const unsigned int nstages = nstages_;
 
-		/*BlasVector times(nstages);
-		for (unsigned int i=0;i<nstages;++i){
-			times[i] = t + h*c_[i];
-		}
-
-		IrkFunctor<RealT,Blas, Func,Vector> solver(nequations,nstages,A_,x,F,h,times);
-		solve_newton<RealT,NewtonSolver,Blas,LUsolver,JacobyAuto>(nequations*nstages,solver,ks_,defaults::ImplicitMethodMaxNewtonSteps);
-
-		for (unsigned int i=0;i<nstages;++i)
-		{
-			BlasVector t(nequations);
-			for (unsigned int j = 0;j<nequations;++j){
-				t[j] = ks_[j+i*nequations];
-			}
-
-			Blas<RealT>::scal(N,b_[i],t);
-			Blas<RealT>::axpy(N,1.0,t,x);
-		}*/
-
 		typedef Blas<RealT> MyBlas;
 
 		VectorDeque<MyBlas> k(N,nstages_);
 
 		int first_idx = 0;	//first nonzero Butcher tableu row index
 		BlasMatrix<MyBlas> J(N);
+
+		//k[0] = h*F(dbegin,x);
+		RealT * p = k.get_vector_pointer(0);
+		F(t,x,p);
+		MyBlas::scal(N,h,p);
 
 		for (unsigned int m = 0; m < nstages_; ++m)	//for each r-k stage...
 		{
@@ -169,9 +155,6 @@ protected:
 	}
 
 public:
-	void init(unsigned int N,RealT * init){
-
-	}
 
 	void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
 		return call_impl(N,t,h,x,F,history);
