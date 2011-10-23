@@ -8,7 +8,7 @@
 
 template<class RealT,
 	template<class Breal> class BlasT,
-	template<template<class RealB> class Blas,class RealT,class Vector,class Func,class History> class StepSolver,
+	template<template<class RealB> class Blas,class RealT,class Vector,class Func,class History> class TStepSolver,
 	class FuncT,
 	class VectorT
 >
@@ -25,7 +25,7 @@ void solve_fixedstep(
 
 	typedef BlasT<RealT> Blas;
 
-	const uint64_t factor	=	1000000ui64;
+	const uint64_t factor	=	1000000;
 	const uint64_t ih		=	(uint64_t)(h*factor+0.5);
 	uint64_t ibegin	=	(uint64_t)(dbegin*factor+0.5);
 	const uint64_t iend		=	(uint64_t)(dend*factor+0.5);
@@ -33,7 +33,7 @@ void solve_fixedstep(
 	VectorT &x = result;
 	Blas::copy(N,init,x);
 	
-	typedef StepSolver<BlasT,RealT,VectorT,FuncT,VectorDeque<BlasT<RealT> > > StepSolver;
+	typedef TStepSolver<BlasT,RealT,VectorT,FuncT,VectorDeque<BlasT<RealT> > > StepSolver;
 
 	StepSolver solver;
 

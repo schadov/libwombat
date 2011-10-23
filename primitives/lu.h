@@ -1,3 +1,4 @@
+#pragma once
 template<class Blas,class RealT,class Matrix,class Vector>
 class LUsolver{
 protected:

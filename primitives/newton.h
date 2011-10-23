@@ -1,5 +1,6 @@
 #pragma once
 #include "defaults.h"
+#include "lu.h"
 
 template<class Blas,
 class RealT,
@@ -56,62 +57,7 @@ public:
 };
 
 //---------------------------Simplified Newton------------------------------
-template<class Blas,
-class RealT,
-class Matrix,
-class Vector,
-class Function,
-class LinearSolver,
-class JacobyCalculator> 
-class NewtonSimplifiedSolver
-{
 
-public:
-
-	void call(unsigned int N, Function fun, Vector& x0,unsigned int max_iter = 0 ){
-		typedef unsigned int uint;
-		BlasVector<Blas> x(N);
-
-		Blas::copy(N,x0,x);
-		uint iteration_count = 0;
-		RealT alpha = 0;
-
-		BlasVector<Blas> b(N);
-		BlasMatrix<Blas> A(N);
-		BlasMatrix<Blas> dx(N);
-
-		JacobyCalculator jacoby;
-		jacoby.call(N,fun,x,A);
-
-		while (max_iter==0 || iteration_count < max_iter){
-			fun(x,b);
-			Blas::scal(N,-1.0,b);	//TODO: get rid of mutiplication
-
-			if(alpha != 0.0 && alpha!=(RealT)1.0){
-				Blas::scal(N*N,alpha,A.as_vector());
-				//A*=alpha;
-			}
-
-			//solve_linear<RealT,Blas,LinearSolver>(N,A,b,dx);
-
-			LinearSolver lin_solver;
-			lin_solver.call(N,A,b,dx);
-
-			if(Blas::nrm2(N,b)< defaults::NewtonEpsilon){ //TODO: customizable accuracy
-				break;
-			}
-
-			if(iteration_count >defaults::NewtonSimplifiedBreakCount){
-				return NewtonSolver<Blas,RealT,Matrix,Vector,Function,LinearSolver,JacobyCalculator>().call(N,fun,x0);
-			}
-
-			Blas::axpy(N,1.0,dx,x);
-			iteration_count++;
-		}
-		Blas::copy(N,x,x0);
-
-	}
-};
 
 //---------------------------Simplified Newton Ex------------------------------
 template<class Blas,

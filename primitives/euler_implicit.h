@@ -4,7 +4,7 @@
 
 
 
-template<class RealT,template<class T> class Blas ,class Func,class History>
+template<class RealT,template<class T> class TBlas ,class Func,class History>
 struct EulerImplicitFunctor{
 	RealT* yn_1;
 	RealT h;
@@ -26,7 +26,7 @@ struct EulerImplicitFunctor{
 
 	void operator()(RealT* y, RealT* out) const{
 		//return (RealT)1./h*(y - yn_1) - f(t,y);
-		typedef Blas<RealT> Blas; 
+		typedef TBlas<RealT> Blas;
 		BlasVector<Blas> tmp(N_);
 		Blas::copy(N_,yn_1,out);
 		f(t,y,tmp);								//tmp = f(t,y)
@@ -44,7 +44,7 @@ struct EulerImplicitStep :
 	public ImplicitStepSolverBase<RealT,Vector,Func,Blas,History,EulerImplicitFunctor<RealT,Blas,Func,History> >
 {
 	void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
-		MyBaseSolver::call(N,t,h,x,F,history);
+		typename ImplicitStepSolverBase<RealT,Vector,Func,Blas,History,EulerImplicitFunctor<RealT,Blas,Func,History> >::MyBaseSolver::call(N,t,h,x,F,history);
 	}
 
 	unsigned int history_length(){
@@ -54,7 +54,7 @@ struct EulerImplicitStep :
 
 //////////////////////////////////////////////////////////////////////////
 
-template<class RealT,template<class T> class Blas ,class Func,class History>
+template<class RealT,template<class T> class TBlas ,class Func,class History>
 struct EulerTrapezoidFunctor{
 	RealT* yn_1;
 	RealT h;
@@ -76,7 +76,7 @@ struct EulerTrapezoidFunctor{
 
 	void operator()(RealT* y, RealT* out) const{
 		//return (RealT)1./h*(y - yn_1) - f(t,y);
-		typedef Blas<RealT> Blas; 
+		typedef TBlas<RealT> Blas;
 		BlasVector<Blas> tmp(N_);
 		f(t,y,tmp);										//tmp = f(t,y)
 
@@ -99,7 +99,7 @@ struct EulerTrapezoidStep :
 	public ImplicitStepSolverBase<RealT,Vector,Func,Blas,History,EulerTrapezoidFunctor<RealT,Blas,Func,History> >
 {
 	void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
-		MyBaseSolver::call(N,t,h,x,F,history);
+		typename ImplicitStepSolverBase<RealT,Vector,Func,Blas,History,EulerTrapezoidFunctor<RealT,Blas,Func,History> >::MyBaseSolver::call(N,t,h,x,F,history);
 	}
 
 	unsigned int history_length(){
@@ -109,7 +109,7 @@ struct EulerTrapezoidStep :
 
 
 //////////////////////////////////////////////////////////////////////////
-template<class RealT,template<class T> class Blas ,class Func,class History>
+template<class RealT,template<class T> class TBlas ,class Func,class History>
 struct SimpsonImplicitFunctor{
 	const RealT* yn_1;
     const RealT* yn;
@@ -132,7 +132,7 @@ struct SimpsonImplicitFunctor{
 
 	//return 1./h*((y - yn_1)) - (f(t,y)+f(t-2*h,yn_1)+4*f(t-h,yn))/3.;
 	void operator()(RealT* y, RealT* out) const{
-		typedef Blas<RealT> Blas; 
+		typedef TBlas<RealT> Blas;
 		BlasVector<Blas> fty(N_);
 		f(t,y,fty);										
 
@@ -160,7 +160,7 @@ struct SimpsonImplicitStep :
 	public ImplicitStepSolverBase<RealT,Vector,Func,Blas,History,SimpsonImplicitFunctor<RealT,Blas,Func,History> >
 {
 	void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
-		MyBaseSolver::call(N,t,h,x,F,history);
+		ImplicitStepSolverBase<RealT,Vector,Func,Blas,History,SimpsonImplicitFunctor<RealT,Blas,Func,History> >::MyBaseSolver::call(N,t,h,x,F,history);
 	}
 
 	unsigned int history_length(){
@@ -171,7 +171,7 @@ struct SimpsonImplicitStep :
 
 //////////////////////////////////////////////////////////////////////////
 
-template<class RealT,template<class T> class Blas ,class Func,class History>
+template<class RealT,template<class T> class TBlas ,class Func,class History>
 struct TickImplicitFunctor{
 	const RealT* yn_1;
 	const RealT* yn;
@@ -194,7 +194,7 @@ struct TickImplicitFunctor{
 
 	//return 1./h*((y - yn_1)) - (0.3584*f(t,y)+0.3584*f(t-2*h,yn_1)+1.2832*f(t-h,yn));
 	void operator()(RealT* y, RealT* out) const{
-		typedef Blas<RealT> Blas; 
+		typedef TBlas<RealT> Blas;
 		BlasVector<Blas> fty(N_);
 		f(t,y,fty);										
 
@@ -224,7 +224,7 @@ struct TickImplicitStep :
 	public ImplicitStepSolverBase<RealT,Vector,Func,Blas,History,TickImplicitFunctor<RealT,Blas,Func,History> >
 {
 	void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
-		MyBaseSolver::call(N,t,h,x,F,history);
+		ImplicitStepSolverBase<RealT,Vector,Func,Blas,History,TickImplicitFunctor<RealT,Blas,Func,History> >::MyBaseSolver::call(N,t,h,x,F,history);
 	}
 
 	unsigned int history_length(){
@@ -235,7 +235,7 @@ struct TickImplicitStep :
 
 //////////////////////////////////////////////////////////////////////////
 
-template<class RealT,template<class T> class Blas ,class Func,class History>
+template<class RealT,template<class T> class TBlas ,class Func,class History>
 struct ThreeEightsFunctor{
 	const RealT* yn_1;
 	const RealT* yn_2;
@@ -259,7 +259,7 @@ struct ThreeEightsFunctor{
 
 	//return 1./h*((y - yn_2)) - (f(t,y)+f(t-3*h,yn_2)+3*f(t-2*h,yn_1) + 3*f(t-h,yn))*(3./8.);
 	void operator()(RealT* y, RealT* out) const{
-		typedef Blas<RealT> Blas; 
+		typedef TBlas<RealT> Blas;
 		BlasVector<Blas> fty(N_);
 		f(t,y,fty);										
 
@@ -292,7 +292,7 @@ struct ThreeEightsImplicitStep :
 	public ImplicitStepSolverBase<RealT,Vector,Func,Blas,History,ThreeEightsFunctor<RealT,Blas,Func,History> >
 {
     void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
-		MyBaseSolver::call(N,t,h,x,F,history);
+    	ImplicitStepSolverBase<RealT,Vector,Func,Blas,History,ThreeEightsFunctor<RealT,Blas,Func,History> >::MyBaseSolver::call(N,t,h,x,F,history);
 	}
 
 	unsigned int history_length() const{

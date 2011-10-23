@@ -116,7 +116,7 @@ public:
 		return data_;
 	}
 
-	operator typename const Blas::FloatType*() const{
+	operator const typename  Blas::FloatType*() const{
 		return data_;
 	}
 
@@ -125,29 +125,29 @@ public:
 template<class Blas> class BlasMatrix: public BlasVector<Blas>{
 	unsigned int dim_;
 public:
-	BlasMatrix(unsigned int N):BlasVector(N*N),dim_(N){}
+	BlasMatrix(unsigned int N):BlasVector<Blas>(N*N),dim_(N){}
 
-	BlasMatrix():BlasVector(),dim_(0){}
+	BlasMatrix():BlasVector<Blas>(),dim_(0){}
 
 	void reset(unsigned int N){
 		dim_ = N;
-		BlasVector::reset(N*N);
+		BlasVector<Blas>::reset(N*N);
 	}
 
-	typename Blas::FloatType& operator()(unsigned int i,unsigned int j){
-		return data_[i*dim_+j];
+	 typename Blas::FloatType& operator()(unsigned int i,unsigned int j){
+		return  BlasVector<Blas>::data_[i*dim_+j];
 	}
 
-	typename const Blas::FloatType& operator()(unsigned int i,unsigned int j) const{
-		return data_[i*dim_+j];
+	const typename  Blas::FloatType& operator()(unsigned int i,unsigned int j) const{
+		return BlasVector<Blas>::data_[i*dim_+j];
 	}
 
 	typename Blas::FloatType* as_vector(){
-		return data_;
+		return BlasVector<Blas>::data_;
 	}
 
-	typename const Blas::FloatType* as_vector() const{
-		return data_;
+	const typename  Blas::FloatType* as_vector() const{
+		return BlasVector<Blas>::data_;
 	}
 
 	unsigned int get_dim()const{
@@ -158,10 +158,10 @@ public:
 
 template<class Blas> class BlasMatrixTransponsed: public BlasVector<Blas>{
 public:
-	BlasMatrixTransponsed(unsigned int N):BlasVector(N*N){}
+	BlasMatrixTransponsed(unsigned int N):BlasVector<Blas>(N*N){}
 
 	typename Blas::FloatType& operator()(unsigned int i,unsigned int j){
-		return data_[j*N+i];
+		return BlasVector<Blas>::data_[j*BlasVector<Blas>::N+i];
 	}
 
 };
@@ -201,7 +201,7 @@ public:
 	}
 
 	RealT* operator [](unsigned int n){
-		assert(n<noccupied_);
+		//assert(n<noccupied_);
 		return data_[n];
 	}
 
@@ -233,7 +233,7 @@ template<class Blas> class VectorDeque{
 
 	RealT* get_nth(unsigned int n){
 		unsigned int pos = n * vector_length_;
-		assert(n<total_sz())
+		//assert(n<total_sz())
 		return &data_[pos];
 	} 
 

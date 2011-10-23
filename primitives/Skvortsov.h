@@ -2,12 +2,12 @@
 #include "StepSolverBase.h"
 
 
-template <template<class R> class Blas,class RealT,class Vector,class Func,class History>
-struct Skvortsov1Step : public StepSolverBase<Blas<RealT> >{
+template <template<class R> class TBlas,class RealT,class Vector,class Func,class History>
+struct Skvortsov1Step : public StepSolverBase<TBlas<RealT> >{
 
 	static void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
 
-		typedef Blas<RealT> Blas;
+		typedef TBlas<RealT> Blas;
 		typedef BlasVector<Blas> BlasVector;
 
 		const RealT alpha = static_cast<RealT>(0.001);
@@ -66,11 +66,11 @@ struct Skvortsov1Step : public StepSolverBase<Blas<RealT> >{
 	}
 };
 
-template <template<class R> class Blas,class RealT,class Vector,class Func,class History>
-struct Skvortsov1StepCPU : public StepSolverBase<Blas<RealT> >{
+template <template<class R> class TBlas,class RealT,class Vector,class Func,class History>
+struct Skvortsov1StepCPU : public StepSolverBase<TBlas<RealT> >{
 
 	void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
-		typedef Blas<RealT> Blas;
+		typedef TBlas<RealT> Blas;
 		typedef BlasVector<Blas> BlasVector;
 
 		const RealT alpha = static_cast<RealT>(0.001);
@@ -117,12 +117,12 @@ struct Skvortsov1StepCPU : public StepSolverBase<Blas<RealT> >{
 
 //////////////////////////////////////////////////////////////////////////
 
-template <template<class R> class Blas,class RealT,class Vector,class Func,class History>
-struct Skvortsov2Step : public StepSolverBase<Blas<RealT> >{
+template <template<class R> class TBlas,class RealT,class Vector,class Func,class History>
+struct Skvortsov2Step : public StepSolverBase<TBlas<RealT> >{
 
 	void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
 
-		typedef Blas<RealT> Blas;
+		typedef TBlas<RealT> Blas;
 		typedef BlasVector<Blas> BlasVector;
 
 		const RealT alpha = static_cast<RealT>(0.001);
@@ -195,12 +195,12 @@ struct Skvortsov2Step : public StepSolverBase<Blas<RealT> >{
 };
 
 
-template <template<class R> class Blas,class RealT,class Vector,class Func,class History>
-struct Skvortsov2StepCPU : public StepSolverBase<Blas<RealT> >{
+template <template<class R> class TBlas,class RealT,class Vector,class Func,class History>
+struct Skvortsov2StepCPU : public StepSolverBase<TBlas<RealT> >{
 
 	void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
 
-		typedef Blas<RealT> Blas;
+		typedef TBlas<RealT> Blas;
 		typedef BlasVector<Blas> BlasVector;
 
 		const RealT alpha = static_cast<RealT>(0.001);
@@ -261,12 +261,12 @@ struct Skvortsov2StepCPU : public StepSolverBase<Blas<RealT> >{
 
 
 
-template <template<class R> class Blas,class RealT,class Vector,class Func,class History>
-struct Skvortsov3StepCPU : public StepSolverBase<Blas<RealT> >{
+template <template<class R> class TBlas,class RealT,class Vector,class Func,class History>
+struct Skvortsov3StepCPU : public StepSolverBase<TBlas<RealT> >{
 
 	void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
 
-		typedef Blas<RealT> Blas;
+		typedef TBlas<RealT> Blas;
 		typedef BlasVector<Blas> BlasVector;
 
 		const RealT alpha = static_cast<RealT>(0.001);
