@@ -22,3 +22,11 @@ TEST(SDirkNT1Test,SolvesTestEq2){
 	test_equation2<SDirkNT1Step>();
 }
 
+
+TEST(SDirkLStableTest,SolvesTestEq1){
+	test_equation1<SDirkLStableStep>();
+}
+
+TEST(SDirkLStableTest,SolvesTestEq2){
+	test_equation2<SDirkLStableStep>();
+}

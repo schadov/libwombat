@@ -34,7 +34,7 @@ struct RKCStep3 : public StepSolverBase<Blas<RealT> >{
 
 #define DECLARE_RKC_METHOD(s) template <template<class R> class Blas,class RealT,class Vector,class Func,class History>\
 struct RKCStep##s :\
-	public RKCStep3<Blas,RealT,Vector,Func,History >{const static unsigned int s_ = ##s;}
+	public RKCStep3<Blas,RealT,Vector,Func,History >{const static unsigned int s_ = s;}
 
 DECLARE_RKC_METHOD(4);
 DECLARE_RKC_METHOD(5);

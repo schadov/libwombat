@@ -211,13 +211,13 @@ namespace rkc_detail{
 			data_.clear();
 		}
 
-		__forceinline std::pair<bool,RealT*> find(unsigned int j){
+		 std::pair<bool,RealT*> find(unsigned int j){
 			if(j>=data_.occupied_items())
 				return std::make_pair(false,(RealT*)0);
 			return std::make_pair(true,data_.get_vector_pointer(j));
 		}
 
-		__forceinline void add(unsigned int j, const RealT* val){
+		 void add(unsigned int j, const RealT* val){
 			if(j==data_.occupied_items())
 				data_.push(val);
 			else if(j<data_.occupied_items())

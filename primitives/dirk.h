@@ -19,7 +19,7 @@ struct SDIrkFunctor{
 	const RealT t_;
 	const unsigned int i_;
 
-	mutable BlasVector<Blas<RealT> > s;
+	mutable BlasVector<Blas<RealT> > s_;
 
 	SDIrkFunctor(
 		unsigned int N,
@@ -34,7 +34,7 @@ struct SDIrkFunctor{
 	a_(a),x_(x),k_(k),h_(h),F_(F),t_(t),i_(i)
 	{
 		nequations_ = N;
-		s.reset(N);
+		s_.reset(N);
 		/*std::vector<RealT> slocal(N);
 		Blas::extract(N,x,slocal);
 
@@ -44,17 +44,19 @@ struct SDIrkFunctor{
 			}
 		}
 		Blas::set(N,&slocal[0],s);*/
-		Blas<RealT>::copy(N,x,s);
+		Blas<RealT>::copy(N,x,s_);
 		for(unsigned int i=0;i<i_;++i){
-			Blas<RealT>::axpy(N,a_[i],k_,s);
+			Blas<RealT>::axpy(N,a_[i],k_,s_);
 		}
 
 	}
 	
 	void operator()(RealT* in, RealT* out) const
 	{
+		BlasVector<Blas<RealT> > s(nequations_);
+		Blas<RealT>::copy(nequations_,s_,s);
 		Blas<RealT>::axpy(nequations_,a_[i_],in,s);
-		BlasVector<Blas<RealT>> fts(nequations_);
+		BlasVector<Blas<RealT> > fts(nequations_);
 		F_(t_,s,fts);
 
 		Blas<RealT>::copy(nequations_,in,out);
@@ -106,6 +108,13 @@ protected:
 			else{	//for nonzero rows of Butcher tableu
 				RealT ti = t + h*c_[m];		//time for the current stage
 
+				const int q = m!=0?m-1:m;
+				RealT *pkm = k.get_vector_pointer(m);
+				if(q!=m){
+					RealT *pkm1 = k.get_vector_pointer(m-1);
+					MyBlas::copy(N,pkm1,pkm);
+				}
+
 				//SDirk_eq eq(a[m],k,x,m,F,h,ti);	//m-th equation object
 				typedef SDIrkFunctor<RealT,Blas, Func,Vector> SDirkFunctorType;
 				SDirkFunctorType eq(N,&A_[m][0],k.get_vector_pointer(m),x,m,F,h,ti);
@@ -131,14 +140,9 @@ protected:
 					LUsolver,
 					JacobyAuto<MyBlas, BlasMatrix<MyBlas>, Vector,SDirkFunctorType >
 				> nsolver;
-				const int q = m!=0?m-1:m;
-				RealT *pkm = k.get_vector_pointer(m);
-				if(q!=m){
-					RealT *pkm1 = k.get_vector_pointer(m-1);
-					MyBlas::copy(N,pkm1,pkm);
-				}
 				
-				nsolver.call(N,eq,J,pkm,10);
+				
+				nsolver.call(N,eq,J,pkm,defaults::ImplicitMethodMaxNewtonSteps);
 			}
 		}
 		BlasVector tmp(N);
@@ -196,9 +200,9 @@ struct SDirk3Step :
 		c[0]= static_cast<RealT>((3+sqrt(3.))/6.);
 		c[1]= static_cast<RealT>((3-sqrt(3.))/6.);
 
-		c_ = c;
-		b_= b;
-		A_ = as;
+		this->c_ = c;
+		this->b_= b;
+		this->A_ = as;
 		this->nstages_ = 2;
 	}
 
@@ -245,6 +249,12 @@ struct SDirkNT1Step :
 		b[2] = static_cast<RealT>(539./600);
 		b[3] = static_cast<RealT>(5./12);
 
+		/*std::vector<RealT> b(s);
+		b[0] = static_cast<RealT>(-37./600);
+		b[1] = static_cast<RealT>(-31./75);
+		b[2] = static_cast<RealT>(1813./6600);
+		b[3] = static_cast<RealT>(37./132);*/
+
 		//c
 		std::vector<RealT> c(s);
 		c[0] = 0;
@@ -253,9 +263,79 @@ struct SDirkNT1Step :
 		c[3] = static_cast<RealT>(1.);
 
 
-		c_ = c;
-		b_= b;
-		A_ = as;
+		this->c_ = c;
+		this->b_= b;
+		this->A_ = as;
+		
+	}
+
+};
+
+
+
+template <template<class RealT> class Blas,class RealT,class Vector,class Func,class History>
+struct SDirkLStableStep :
+	public SDirkGeneric<Blas,RealT,Vector,Func,History>
+{
+
+	SDirkLStableStep()
+	{
+		this->nstages_ = 5;
+		std::vector<std::vector<RealT> > as;
+		std::vector<RealT> tmp(this->nstages_,0.0);
+		tmp[0] = static_cast<RealT>(1./4);
+		as.push_back(tmp);
+
+		tmp[0]=static_cast<RealT>(1./2);
+		tmp[1]=static_cast<RealT>(1./4);
+		as.push_back(tmp);
+
+
+		tmp[0]=static_cast<RealT>(17./50);
+		tmp[1]=static_cast<RealT>(-1./25);
+		tmp[2]=static_cast<RealT>(1./4);
+		as.push_back(tmp);
+
+		tmp[0]=static_cast<RealT>(371./1360);
+		tmp[1]=static_cast<RealT>(-137./2720);
+		tmp[2]=static_cast<RealT>(15./544);
+		tmp[3]=static_cast<RealT>(1./4);
+		as.push_back(tmp);		
+
+		tmp[0]=static_cast<RealT>(25./24);
+		tmp[1]=static_cast<RealT>(-49./48);
+		tmp[2]=static_cast<RealT>(125./16);
+		tmp[3]=static_cast<RealT>(-85./12);
+		tmp[4]=static_cast<RealT>(1./4);
+		as.push_back(tmp);	
+
+		const int s = this->nstages_;
+		//b
+		std::vector<RealT> b(s);
+		b[0] = static_cast<RealT>(25./24);
+		b[1] = static_cast<RealT>(-49./48);
+		b[2] = static_cast<RealT>(125./16);
+		b[3] = static_cast<RealT>(-85./12);
+		b[4] = static_cast<RealT>(1./4);
+
+		/*std::vector<RealT> b(s);
+		b[0] = static_cast<RealT>(-37./600);
+		b[1] = static_cast<RealT>(-31./75);
+		b[2] = static_cast<RealT>(1813./6600);
+		b[3] = static_cast<RealT>(37./132);*/
+
+		//c
+		std::vector<RealT> c(s);
+		c[0] = static_cast<RealT>(1./4);;
+		c[1] = static_cast<RealT>(3./4);
+		c[2] = static_cast<RealT>(11./20);
+		c[3] = static_cast<RealT>(1./2);
+		c[4] = static_cast<RealT>(1.);
+
+
+		this->c_ = c;
+		this->b_= b;
+		this->A_ = as;
 		
 	}
 

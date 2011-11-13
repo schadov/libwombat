@@ -44,7 +44,7 @@ public:
 			//Vector &p = dx;
 			lin_solver.call(N,A,b,dx);
 
-			if(Blas::nrm2(N,b)< defaults::NewtonEpsilon){ //TODO: customizable accuracy
+			if(Blas::nrm2(N,dx)< defaults::NewtonEpsilon){ //TODO: customizable accuracy
 				break;
 			}
 
@@ -103,7 +103,8 @@ public:
 		/*	LinearSolver lin_solver;
 			lin_solver.call(N,A,b,dx);*/
 
-			if(Blas::nrm2(N,b)< defaults::NewtonEpsilon){ //TODO: customizable accuracy
+			RealT err =  Blas::nrm2(N,pdx);
+			if(err < defaults::NewtonEpsilonForDE){ //TODO: customizable accuracy
 				break;
 			}
 

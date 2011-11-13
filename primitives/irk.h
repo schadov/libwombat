@@ -138,20 +138,20 @@ struct IrkRadauIA3Step :
 
 	IrkRadauIA3Step()
 	{
-		A_.reset(2);
-		A_(0,0) = (RealT)(1./4);
-		A_(0,1) = (RealT)(-1./4);
+		this->A_.reset(2);
+		this->A_(0,0) = (RealT)(1./4);
+		this->A_(0,1) = (RealT)(-1./4);
 
-		A_(1,0) = (RealT)(1./4);
-		A_(1,1) = (RealT)(5./12);
+		this->A_(1,0) = (RealT)(1./4);
+		this->A_(1,1) = (RealT)(5./12);
 
-		b_.reset(2);
-		b_[0] = (RealT)(1./4);
-		b_[1] = (RealT)(3./4);
+		this->b_.reset(2);
+		this->b_[0] = (RealT)(1./4);
+		this->b_[1] = (RealT)(3./4);
 
-		c_.reset(2);
-		c_[0] = 0;
-		c_[1] = (RealT)(2./3);
+		this->c_.reset(2);
+		this->c_[0] = 0;
+		this->c_[1] = (RealT)(2./3);
 
 		this->nstages_ = 2;
 	}
@@ -170,20 +170,20 @@ struct IrkGauss4Step :
 
 	IrkGauss4Step()
 	{
-		A_.reset(2);
-		A_(0,0) = (RealT)(1./4);
-		A_(0,1) = (RealT)(-0.0386751345948129); // 1/4 - sqrt(3)/6
+		this->A_.reset(2);
+		this->A_(0,0) = (RealT)(1./4);
+		this->A_(0,1) = (RealT)(-0.0386751345948129); // 1/4 - sqrt(3)/6
 
-		A_(1,0) = (RealT)(0.538675134594813);  //  1/4 + sqrt(3)/6
-		A_(1,1) = (RealT)(1./4);
+		this->A_(1,0) = (RealT)(0.538675134594813);  //  1/4 + sqrt(3)/6
+		this->A_(1,1) = (RealT)(1./4);
 
-		b_.reset(2);
-		b_[0] = (RealT)(1./2);
-		b_[1] = (RealT)(1./2);
+		this->b_.reset(2);
+		this->b_[0] = (RealT)(1./2);
+		this->b_[1] = (RealT)(1./2);
 
-		c_.reset(2);
-		c_[0] = (RealT)0.211324865405187;				// 1./2 - sqrt(3.)/6;
-		c_[1] = (RealT)0.538675134594813;				// 1./4 + sqrt(3.)/6;
+		this->c_.reset(2);
+		this->c_[0] = (RealT)0.211324865405187;				// 1./2 - sqrt(3.)/6;
+		this->c_[1] = (RealT)0.538675134594813;				// 1./4 + sqrt(3.)/6;
 
 		this->nstages_ = 2;
 	}
@@ -202,39 +202,39 @@ struct IrkLobattoIIIC6Step :
 
 	IrkLobattoIIIC6Step()
 	{
-		A_.reset(4);
-		A_(0,0) = (RealT)(1./12);
-		A_(0,1) = (RealT)(-0.186338998124982);	// sqrt(5)/12
-		A_(0,2) = (RealT)0.186338998124982;			//sqrt(5)/12
-		A_(0,3) = (RealT)(-1./12);
+		this->A_.reset(4);
+		this->A_(0,0) = (RealT)(1./12);
+		this->A_(0,1) = (RealT)(-0.186338998124982);	// sqrt(5)/12
+		this->A_(0,2) = (RealT)0.186338998124982;			//sqrt(5)/12
+		this->A_(0,3) = (RealT)(-1./12);
 
-		A_(1,0) = (RealT)(1./12);
-		A_(1,1) = (RealT)(1./4);	
-		A_(1,2) = (RealT)-0.0942079307083088;			//((10 - 7*sqrt(5.))/60);
-		A_(1,3) = (RealT)(-1./12);
+		this->A_(1,0) = (RealT)(1./12);
+		this->A_(1,1) = (RealT)(1./4);	
+		this->A_(1,2) = (RealT)-0.0942079307083088;			//((10 - 7*sqrt(5.))/60);
+		this->A_(1,3) = (RealT)(-1./12);
 
-		A_(2,0) = (RealT)(1./12);
-		A_(2,1) = (RealT)(0.427541264041642);		// ((10 + 7*sqrt(5.))/60);
-		A_(2,2) = (RealT)0.186338998124982;			//sqrt(5)/12
-		A_(2,3) = (RealT)(-0.0372677996249965);		//-sqrt(5)/60
+		this->A_(2,0) = (RealT)(1./12);
+		this->A_(2,1) = (RealT)(0.427541264041642);		// ((10 + 7*sqrt(5.))/60);
+		this->A_(2,2) = (RealT)0.186338998124982;			//sqrt(5)/12
+		this->A_(2,3) = (RealT)(-0.0372677996249965);		//-sqrt(5)/60
 
-		A_(3,0) = (RealT)(1./12);
-		A_(3,1) = (RealT)(5./12);	
-		A_(3,2) = (RealT)(5./12);			
-		A_(3,3) = (RealT)(1./12);
+		this->A_(3,0) = (RealT)(1./12);
+		this->A_(3,1) = (RealT)(5./12);	
+		this->A_(3,2) = (RealT)(5./12);			
+		this->A_(3,3) = (RealT)(1./12);
 
 
-		b_.reset(4);
-		b_[0]=(RealT)(1./12);
-		b_[1]=(RealT)(5./12);
-		b_[2]=(RealT)(5./12);
-		b_[3]=(RealT)(1./12);
+		this->b_.reset(4);
+		this->b_[0]=(RealT)(1./12);
+		this->b_[1]=(RealT)(5./12);
+		this->b_[2]=(RealT)(5./12);
+		this->b_[3]=(RealT)(1./12);
 
-		c_.reset(4);
-		c_[0] = 0;
-		c_[1] = (RealT)0.276393202250021;				//(5 - sqrt(5.))/10.;
-		c_[2] = (RealT)0.723606797749979;				//(5 + sqrt(5.))/10.;
-		c_[3] = 1;
+		this->c_.reset(4);
+		this->c_[0] = 0;
+		this->c_[1] = (RealT)0.276393202250021;				//(5 - sqrt(5.))/10.;
+		this->c_[2] = (RealT)0.723606797749979;				//(5 + sqrt(5.))/10.;
+		this->c_[3] = 1;
 
 		this->nstages_ = 4;
 	}
