@@ -368,6 +368,11 @@ public:
 		push_vector(p,v);
 	}
 
+	RealT get_at(unsigned int j,unsigned int k) const{
+		const unsigned int p = get_address_of_vector(j);
+		return &data_[p+k];
+	}
+
 	void clear(){
 		reset(vector_length_,vector_number_);
 	}

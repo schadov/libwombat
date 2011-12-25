@@ -325,6 +325,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="lib"
+					>
+					<Filter
+						Name="kernel_blas"
+						>
+						<File
+							RelativePath=".\ker_blas.h"
+							>
+						</File>
+					</Filter>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="LinearSolvers"
@@ -411,6 +423,10 @@
 				</File>
 				<File
 					RelativePath=".\ode_solver.h"
+					>
+				</File>
+				<File
+					RelativePath=".\projective.h"
 					>
 				</File>
 				<File

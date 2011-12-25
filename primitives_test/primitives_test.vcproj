@@ -187,6 +187,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\explicit_rk_test.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\irk_test.cpp"
 				>
 			</File>
@@ -200,6 +204,10 @@
 			</File>
 			<File
 				RelativePath=".\primitives_test.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\projective_test.cpp"
 				>
 			</File>
 			<File

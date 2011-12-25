@@ -84,8 +84,8 @@ public:
 		//BlasMatrix<Blas> A(N);
 		BlasVector<Blas> dx(N);
 
-		JacobyCalculator jacoby;
-		jacoby.call(N,fun,x,A);
+		//JacobyCalculator jacoby;
+		//jacoby.call(N,fun,x,A);
 		while (max_iter==0 || iteration_count < max_iter){
 			fun(x,b);
 			Blas::scal(N,-1.0,b);	//TODO: get rid of mutiplication

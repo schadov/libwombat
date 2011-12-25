@@ -50,3 +50,15 @@ TEST(Skvortsov3Test,SolvesTestEq2CPU){
 	test_equation2<Skvortsov3StepCPU>();
 }
 
+
+/////////////////////////////////////////////////////////////////////////
+
+TEST(Rk4StepStabilizedTest,SolvesTestEq1CPU){
+	test_equation1<Rk4StepStabilized>();
+}
+
+TEST(Rk4StepStabilizedTest,SolvesTestEq2CPU){
+	test_equation2<Rk4StepStabilized>();
+}
+
+
