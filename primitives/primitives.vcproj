@@ -453,6 +453,14 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="parallel"
+					>
+					<File
+						RelativePath=".\parallel_euler.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Nonlinear"

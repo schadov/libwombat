@@ -315,7 +315,10 @@ struct Skvortsov2StepCPU_ : public StepSolverBase<TBlas<RealT> >{
 				c = static_cast<RealT>(1/3.+b/12.);
 			}
 			else{
-				r = i;
+				if(abs(b)>5*abs(a)){
+					return 1;
+				}
+				
 				a = a/b;
 				if(a<0) 
 					c = static_cast<RealT>(a*(1+a)/(a-1));

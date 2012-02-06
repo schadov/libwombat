@@ -1,5 +1,8 @@
 #pragma once
+#include <utility>
 #include <deque>
+
+
 
 template <class RealT> class Vector{
 	RealT * pdata_;
@@ -118,6 +121,11 @@ public:
 
 	operator const typename  Blas::FloatType*() const{
 		return data_;
+	}
+
+	void swap( BlasVector<Blas> &other){
+		std::swap(this->data_,other.data_);
+		std::swap(this->sz_,other.sz_);
 	}
 
 };
@@ -262,7 +270,9 @@ public:
 	VectorDeque(unsigned int vector_length, unsigned int max_sz):
 	  vector_length_(vector_length),vector_number_(max_sz),occupied_items_(0)
 	  {
-		  data_.reset(total_sz());
+		  if(total_sz()>0){
+			data_.reset(total_sz());
+		  }
 		 // std::fill(( RealT*)data_,data_+total_sz(),RealT(0));
 		  begin_ = 0;
 		  end_ = 0;
