@@ -16,6 +16,7 @@ struct PFEStep : public StepSolverBase<TBlas<RealT> >{
 		{
 			F(inner_t,x,tmp);
 			TBlas<RealT>::axpy(N,inner_h,tmp,x);
+			//printf("-!!!- inner val %f  %f\n",x[0],x[N/3*2]);
 			if(i==INNER_STEPS-1){
 				TBlas<RealT>::copy(N,x,&inner_results[N]);
 			}
@@ -28,6 +29,7 @@ struct PFEStep : public StepSolverBase<TBlas<RealT> >{
 		TBlas<RealT>::scal(N,psi+1,&inner_results[N]);
 		TBlas<RealT>::axpy(N,-psi,&inner_results[0],&inner_results[N]);
 		TBlas<RealT>::copy(N,&inner_results[N],x);
+		//printf("----!!!-  val %f  %f\n",x[0],x[N/3*2]);
 	
 	}
 };

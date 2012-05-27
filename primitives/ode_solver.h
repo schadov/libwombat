@@ -4,6 +4,7 @@
 #include "BlasCommon.h"
 #include "rk.h"
 #include <omp.h>
+#include <cassert>
 
 //typedef void (double,double,double*,double*) AAA; 
 
@@ -260,6 +261,7 @@ void solve_fixedstep_parallel(
 			/*if(history_length>1){
 				history.push(x);
 			}*/
+			//printf("--%f\n",x[0]);
 			#pragma omp barrier
 			int braek = 0;
 		}

@@ -2,13 +2,15 @@
 
 #include <cuda.h>
 #include <cublas.h>
-#include "SparseMatrix.h"
+//#include "SparseMatrix.h"
+#include "BlasCommon.h"
 
 #define BLASFUN(name) cublasS##name
 
 struct CUDABlas
 {
 	typedef BlasCommon::FloatType Real;
+	typedef Real FloatType;
 	static const int one = 1;
 public:
 	static Real dot(const unsigned int N,const Real* x,const Real* y)
@@ -58,7 +60,7 @@ public:
 	}
 
 
-	template<class Matrix> 
+	/*template<class Matrix> 
 	static void initialize_matrix( Matrix& A)
 	{
 		A.attach_gpu_storage(A.load_to_gpu());
@@ -73,14 +75,14 @@ public:
 
 	template<> static void spmv<float>(unsigned int N, SparseMatrixCRS<float>& A, float* x, float* b){
 		spmv_csr_float(A.get_gpu_storage(),x,b);
-	};
+	}*/
 
 	template<class RealT> static void memberwise_mul(unsigned int N, RealT* x, RealT* y,RealT* z);
 
-	template<> static void memberwise_mul<float>(unsigned int N, float* x, float* y,float* z)
-	{
-		cuda_memberwise_mul_float(N,x,y,z);
-	}
+	//template<> static void memberwise_mul<float>(unsigned int N, float* x, float* y,float* z)
+	//{
+	//	cuda_memberwise_mul_float(N,x,y,z);
+	//}
 
 
 };

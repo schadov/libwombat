@@ -85,6 +85,7 @@ protected:
 	void allocate(unsigned int N){
 		Blas::allocate(N,data_);
 		sz_ = N;
+		//printf("allocating %d %p\n",N,data_);
 	}
 
 	void deallocate(){
@@ -127,6 +128,10 @@ public:
 		std::swap(this->data_,other.data_);
 		std::swap(this->sz_,other.sz_);
 	}
+
+	unsigned int size()const{
+		return sz_;
+	};
 
 };
 

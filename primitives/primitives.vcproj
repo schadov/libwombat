@@ -123,6 +123,7 @@
 				AdditionalIncludeDirectories="Z:\Program Files\Intel\MKL\10.1.0.018\include\;$(INTEL_DEF_IA32_INSTALL_DIR)TBB\Include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="0"
+				StructMemberAlignment="1"
 				EnableFunctionLevelLinking="true"
 				EnableEnhancedInstructionSet="0"
 				UsePrecompiledHeader="2"

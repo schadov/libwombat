@@ -19,6 +19,7 @@ template<class Float_t> struct Tbb_worker{
 
 template<class Float_t> struct Unary_tbb_worker:public Tbb_worker<Float_t>
 {
+	typedef typename Tbb_worker<Float_t>::Float Float;
 	Float * m_result;
 	Float * m_a;
 
@@ -29,6 +30,8 @@ template<class Float_t> struct Unary_tbb_worker:public Tbb_worker<Float_t>
 
 template<class Float_t> struct Binary_tbb_worker:public Tbb_worker<Float_t>
 {
+
+	typedef typename Tbb_worker<Float_t>::Float Float;
 
 	Float * m_result;
 	Float * m_a;
