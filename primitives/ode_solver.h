@@ -107,11 +107,13 @@ int  solve_varstep_embedded(
 
 	RealT hinit = h;
 	//main solver loop
+
+	const real_t scale_factor = 1.5f;
 	for(uint64_t ti=ibegin+ih;ti<iend;){
 		RealT t = ti/(RealT)factor;
 		const RealT err = solver.call(N,t,h,x,F);
 		if(err>accuracy){
-			h = h/1.5f;
+			h = h/scale_factor;
 			if(h<min_step){
 				return 1; //cant solve
 			}
@@ -119,8 +121,8 @@ int  solve_varstep_embedded(
 		else{
 			const uint64_t ih	=	(uint64_t)(h*factor+0.5);
 			ti+=ih;
-			if(h<hinit/1.5f){
-				h*=1.5f;
+			if(h<hinit/scale_factor){
+				h*=scale_factor;
 			}
 		}
 	}

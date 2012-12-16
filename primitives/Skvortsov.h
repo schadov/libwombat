@@ -536,10 +536,10 @@ struct BogackiShampineStab : public StepSolverBase<TBlas<RealT> >{
 
 		for (unsigned int i=0;i<N;++i)
 		{	
-			RealT a = 0.001f*(k4[i]-k3[i]);
+			RealT a = k2[i]-k1[i];
 			RealT b = k3[i] - k2[i];
 			RealT c;
-			if(abs(b)<=1.6*abs(a)){
+			if(abs(b)<=abs(a) && a*b>=0){
 				if(b!=0) b = b/a;
 				c = 0;
 			}
