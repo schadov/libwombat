@@ -5,12 +5,19 @@
 template <template<class R> class TBlas,class RealT,class Vector,class Func,class History>
 struct PFEStep : public StepSolverBase<TBlas<RealT> >{
 
-	static void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0){
+	typename StepSolverBase<TBlas<RealT> >::MyBlasVector inner_results;
+	typename StepSolverBase<TBlas<RealT> >::MyBlasVector tmp;
 
+	void init(unsigned int N,RealT * init){
+		inner_results.reset(N+N);
+		tmp.reset(N);
+	}
+
+	void call(unsigned int N,RealT t,RealT h, Vector &x, const Func &F,const History* history = 0)
+	{
 		const int INNER_STEPS = 4;
 		const RealT inner_h = h/16;
-		typename StepSolverBase<TBlas<RealT> >::MyBlasVector tmp(N);
-		typename StepSolverBase<TBlas<RealT> >::MyBlasVector inner_results(N*2);
+				
 		RealT inner_t = t;
 		for (unsigned int i=0;i<INNER_STEPS;++i)
 		{
@@ -33,3 +40,5 @@ struct PFEStep : public StepSolverBase<TBlas<RealT> >{
 	
 	}
 };
+
+
